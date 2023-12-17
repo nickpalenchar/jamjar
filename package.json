@@ -4,15 +4,26 @@
   "description": "croud-sourced playlists",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "script:initialize-environment": "./scripts/initialize-environment.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:migrate": "prisma migrate dev --name init --schema ./packages/database/schema.prisma"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.10.4",
+    "dotenv": "^16.3.1",
+    "prettier": "3.1.1",
     "prisma": "^5.7.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "winston": "^3.11.0"
   }
 }

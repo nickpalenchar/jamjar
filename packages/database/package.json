@@ -1,0 +1,17 @@
+{
+  "name": "@jamjar/database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build": "prisma generate",
+    "format": "prisma format --schema database/schema.prisma"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tsup": "^8.0.1"
+  }
+}

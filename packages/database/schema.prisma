@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @unique @default(uuid())
+  email      String?      @unique
+  name       String?
+  anon       Boolean
+  Jam        Jam[]
+  QueueSongs QueueSongs[]
+  Session    Session[]
+}
+
+model Session {
+  id     String   @id @unique @default(cuid())
+  user   User     @relation(fields: [userId], references: [id])
+  userId String
+  exp    DateTime
+}
+
+model Jam {
+  id         String       @id @unique @default(uuid())
+  phrase     String       @unique @default(uuid())
+  owner      User         @relation(fields: [userId], references: [id])
+  userId     String
+  spotify    Json
+  QueueSongs QueueSongs[]
+  Worker     Worker[]
+}
+
+model QueueSongs {
+  id String @id @unique @default(uuid())
+
+  // relations
+  submittor User   @relation(fields: [userId], references: [id])
+  userId    String
+  jam       Jam    @relation(fields: [jamId], references: [id])
+  jamId     String
+
+  // info that can be displaed in the queue
+  rank     Int    @default(5)
+  name     String
+  artist   String
+  imageUrl String
+}
+
+model Worker {
+  id    String @id @unique @default(uuid())
+  jam   Jam    @relation(fields: [jamId], references: [id])
+  jamId String
+}
