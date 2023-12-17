@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16.1-alpine3.19
+  volumes:
+    - /var/lib/postgresql/data:etc/data
