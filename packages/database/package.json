@@ -5,13 +5,16 @@
   "main": "index.ts",
   "scripts": {
     "build": "prisma generate",
-    "format": "prisma format --schema database/schema.prisma"
+    "format": "prisma format --schema database/schema.prisma",
+    "seed:basicJam": "./scripts/drop-database.sh && npx ts-node seeds/basicJam.ts"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "tsup": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
   }
 }

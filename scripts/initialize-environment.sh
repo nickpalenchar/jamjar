@@ -2,6 +2,6 @@
 
 source .env
 
-ln -s git-hooks/pre-commit ./git/hooks
+ln -s git-hooks/pre-commit ./.git/hooks
 
 docker compose up -d
