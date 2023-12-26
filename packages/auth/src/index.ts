@@ -1,11 +1,13 @@
 import express, { NextFunction, type Request, type Response } from "express";
-import process from "node:process";
 import { getLogger } from "./logging";
+import { createProxyMiddleware } from 'http-proxy-middleware'
 import { config } from "./config";
 import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";
 import { devStrategy, basicAuthStrategy } from "./authStrategies";
 import { AuthenticationResult } from "./middleware/types";
+
+import 'dotenv/config';
 
 const log = getLogger();
 
@@ -44,11 +46,17 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
   if (!result.success) {
     res.status(401).send(result.reason);
   }
-
-  // authenticated path
-  
-
+  req.body.authResult = result;
+  next();
 });
+
+app.use(createProxyMiddleware({
+  target: config.DEPENDENCY_API,
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req) => {
+    proxyReq.setHeader('User-Context', req.body.authResult.id);
+  }, 
+}))
 
 app.use(createContext);
 

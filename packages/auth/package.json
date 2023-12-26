@@ -2,13 +2,13 @@
   "name": "@jamjar/auth",
   "version": "1.0.0",
   "description": "Workers are nodejs threads that run tasks for a given jam.",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./dist/index.js",
-    "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/index.js",
+    "start": "./dist/start.js",
+    "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/start.js",
     "dev": "concurrently npm:build:watch npm:prettier:watch npm:start:watch",
-    "build:watch": "tsup src/index.ts --watch",
+    "build:watch": "tsup start.ts --watch",
     "prettier:watch": "onchange -d 10000 \"**/*.ts\" -- prettier --write --ignore-unknown {{changed}}"
   },
   "type": "commonjs",
@@ -26,8 +26,10 @@
     "@jamjar/database": "^1.0.0",
     "body-parser": "^1.20.2",
     "date-fns": "^3.0.6",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fp-ts": "^2.16.1",
+    "http-proxy-middleware": "^2.0.6",
     "io-ts": "^2.2.21"
   }
 }
