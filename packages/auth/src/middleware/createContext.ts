@@ -1,8 +1,9 @@
 import { Middleware } from "./types";
-import { prisma } from "@jamjar/database";
+import { PrismaClient } from "@prisma/client";
 import { getLogger } from "../logging";
 import { Logger } from "winston";
 
+const prisma = new PrismaClient();
 interface Context {
   log: Logger;
   principal: {

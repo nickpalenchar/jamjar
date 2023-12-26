@@ -1,6 +1,6 @@
-import * as t from 'io-ts';
-import path from 'path';
-import { readFileSync } from 'fs';
+import * as t from "io-ts";
+import path from "path";
+import { readFileSync } from "fs";
 
 const CommonConfig = t.type({
   Env: t.keyof({
@@ -13,13 +13,17 @@ const CommonConfig = t.type({
 
 const Config = CommonConfig;
 
-const file = process.env.NODE_ENV ? `config.${process.env.NODE_ENV.toLowerCase()}.json` : 'config.prod.json';
+const file = process.env.NODE_ENV
+  ? `config.${process.env.NODE_ENV.toLowerCase()}.json`
+  : "config.prod.json";
 
-const fileValues = readFileSync(path.join(__dirname, '..', '..', 'secrets', file)).toJSON();
+const fileValues: string = JSON.parse(
+  readFileSync(path.join(__dirname, "..", "secrets", file)).toString(),
+);
 
 const validation = Config.decode(fileValues);
 
-if (validation._tag === 'Left') {
+if (validation._tag === "Left") {
   throw validation.left;
 }
 

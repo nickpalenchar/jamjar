@@ -23,13 +23,13 @@
     "tsup": "^8.0.1"
   },
   "dependencies": {
-    "@jamjar/database": "^1.0.0",
     "body-parser": "^1.20.2",
     "date-fns": "^3.0.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fp-ts": "^2.16.1",
     "http-proxy-middleware": "^2.0.6",
-    "io-ts": "^2.2.21"
+    "io-ts": "^2.2.21",
+    "prisma": "^5.7.1"
   }
 }
