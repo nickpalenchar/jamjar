@@ -1,2 +1,4 @@
 import "dotenv/config";
-import "./src/index";
+import { start } from "./src/index";
+
+start();
