@@ -4,6 +4,7 @@ import { getLogger } from "./logging";
 import { config } from "./config";
 import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";
+import { jam } from "./routers/jam";
 
 const log = getLogger();
 
@@ -24,6 +25,12 @@ app.get("/healthz", (req: Request, res: Response) =>
   res.status(200).json({ context: req.body.context.principal }),
 );
 
+// Routers //
+
+app.use("/jam", jam);
+
+// Error handling //
+
 app.use(function fourOhFourHandler(
   _: Request,
   res: Response,
@@ -32,14 +39,15 @@ app.use(function fourOhFourHandler(
   res.status(404).send();
   next();
 });
+
 app.use(function fiveHundredHandler(
   err: Error,
   req: Request,
   res: Response,
   _: NextFunction,
 ): void {
-  console.error(err);
-  res.status(500).send();
+  log.error("5xx Error thrown", err);
+  res.status(500).send("Something went wrong.");
 });
 
 // Start server

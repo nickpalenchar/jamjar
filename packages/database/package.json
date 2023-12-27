@@ -12,9 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "http-errors": "^2.0.0",
     "tsup": "^8.0.1"
   },
   "devDependencies": {
+    "@types/http-errors": "^2.0.4",
     "@types/node": "^20.10.5"
   }
 }

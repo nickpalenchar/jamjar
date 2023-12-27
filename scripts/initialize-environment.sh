@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source .env
-
 ln -s git-hooks/pre-commit ./.git/hooks
-
-docker compose up -d
+source packages/database/.env
+docker compose --env-file=packages/database/.env up -d --wait
