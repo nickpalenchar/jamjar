@@ -1,5 +1,6 @@
 /** Creates a Jam and a user */
 import { PrismaClient } from "@prisma/client";
+import { add } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -23,6 +24,7 @@ async function seed() {
       data: {
         userId: user.id,
         spotify: {},
+        exp: add(Date.now(), { hours: 6 })
       },
     });
     console.log('\nJam:')

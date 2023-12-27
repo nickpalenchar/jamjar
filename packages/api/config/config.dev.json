@@ -1,4 +1,5 @@
 {
   "Env": "DEV",
-  "rootKey": "jivemyhive"
+  "rootKey": "jivemyhive",
+  "votingPrice": 1
 }
