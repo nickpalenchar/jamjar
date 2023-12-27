@@ -33,6 +33,7 @@ model Jam {
   owner      User         @relation(fields: [userId], references: [id])
   userId     String
   spotify    Json
+  exp        DateTime
   QueueSongs QueueSongs[]
   Worker     Worker[]
 }

@@ -1,15 +1,7 @@
-import { Middleware } from "./types";
+import { Middleware, Context } from "./types";
 import { PrismaClient } from "@prisma/client";
 import { getLogger } from "../logging";
-import { Logger } from "winston";
-
 const prisma = new PrismaClient();
-interface Context {
-  log: Logger;
-  principal: {
-    user: Record<string, any> | null;
-  };
-}
 
 const getUserFromUserContext = async (
   userContext?: string,
