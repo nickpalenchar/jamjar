@@ -11,8 +11,6 @@ async function seed() {
         anon: false,
       },
     });
-    console.log('Users:')
-    console.log(user);
     const exp = new Date();
     exp.setDate(exp.getDate() + 40)
     const session = await prisma.session.create({
@@ -21,8 +19,6 @@ async function seed() {
         exp
       }
     })
-    console.log('Session:');
-    console.log(session);
     const jam = await prisma.jam.create({
       data: {
         userId: user.id,

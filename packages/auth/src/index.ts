@@ -18,7 +18,6 @@ export const start = () => {
 
   app.use(bodyParser.json());
 
-
   /**
    * Authenticates based on a given strategy.
    * 
@@ -34,20 +33,19 @@ export const start = () => {
    * service (the API) with a 'User-Context' header set to the authenticated userId.
    */
   app.use(async (req: Request, res: Response, next: NextFunction) => {
-    console.log('new request yooo');
     const authHeader = req.headers['authorization'];
-  
     let result: AuthenticationResult;
     if (!authHeader && config.Env === 'DEV' ) {
       result = await devStrategy()
-    } else if (authHeader) {
-      result = await basicAuthStrategy(authHeader);
+    } else if (authHeader && authHeader.startsWith('Basic ')) {
+      result = await basicAuthStrategy(authHeader.split(' ')[1]);
     }
     else {
       result = { success: false, reason: 'Not authenticated.'}
     }
     if (!result.success) {
       res.status(401).send(result.reason);
+      return;
     }
     req.body.authResult = result;
     next();
@@ -58,15 +56,10 @@ export const start = () => {
     changeOrigin: true,
     onProxyReq: (proxyReq, req) => {
       proxyReq.setHeader('User-Context', req.body.authResult.id);
+      delete req.body.authResult;
     }, 
   }))
-  
-  app.use(createContext);
-  
-  app.get("/healthz", (req: Request, res: Response) =>
-    res.status(200).json({ context: req.body.context.principal }),
-  );
-  
+    
   app.use(function fourOhFourHandler(
     _: Request,
     res: Response,
@@ -98,3 +91,5 @@ export const stop = async (): Promise<void> =>
     }
     server.close(() => resolve());
   });
+
+export { app };

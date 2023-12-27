@@ -7,6 +7,7 @@ const CommonConfig = t.type({
     DEV: null,
     STAGING: null,
     PROD: null,
+    TEST: null,
   }),
   DEPENDENCY_API: t.string,
 });
@@ -18,7 +19,7 @@ const file = process.env.NODE_ENV
   : "config.prod.json";
 
 const fileValues: string = JSON.parse(
-  readFileSync(path.join(__dirname, "..", "secrets", file)).toString(),
+  readFileSync(path.join(__dirname, "..", "..", "secrets", file)).toString(),
 );
 
 const validation = Config.decode(fileValues);
