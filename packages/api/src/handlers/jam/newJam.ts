@@ -31,5 +31,12 @@ export const newJam: Middleware = async (req, res, next) => {
       exp: add(new Date(), { hours: 6 }),
     },
   });
+
+  await prisma.userInJam.create({
+    data: {
+      userId: context.principal.user.id,
+      jamId: jam.id,
+    },
+  });
   res.status(201).send(allowedFields("jam", jam));
 };

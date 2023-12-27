@@ -1,7 +1,6 @@
 import express, { NextFunction, type Request, type Response } from "express";
-import process from "node:process";
 import { getLogger } from "./logging";
-import { config } from "./config";
+import httpErrors from "http-errors";
 import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";
 import { jam } from "./routers/jam";
@@ -46,6 +45,12 @@ app.use(function fiveHundredHandler(
   res: Response,
   _: NextFunction,
 ): void {
+  if (err instanceof httpErrors.HttpError) {
+    const { statusCode, message } = err;
+    log.warn("http Error: ", { statusCode, message });
+    res.status(err.statusCode).send(err.message);
+    return;
+  }
   log.error("5xx Error thrown", err);
   res.status(500).send("Something went wrong.");
 });

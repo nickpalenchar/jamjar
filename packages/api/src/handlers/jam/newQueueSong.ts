@@ -57,6 +57,4 @@ export const newQueueSong: Middleware = async (req, res, next) => {
   });
 
   res.status(201).send(allowedFields("queueSongs", queueSong));
-
-  // res.status(201).send(allowedFields("jam", jam));
 };

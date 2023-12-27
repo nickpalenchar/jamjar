@@ -8,6 +8,7 @@ const CommonConfig = t.type({
     STAGING: null,
     PROD: null,
   }),
+  votingPrice: t.Int,
 });
 const DevConfig = t.intersection([
   CommonConfig,
