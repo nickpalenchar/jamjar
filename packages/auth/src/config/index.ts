@@ -1,6 +1,9 @@
 import * as t from "io-ts";
 import path from "path";
 import { readFileSync } from "fs";
+import { getLogger } from "../logging";
+
+const log = getLogger();
 
 const CommonConfig = t.type({
   Env: t.keyof({
@@ -18,8 +21,10 @@ const file = process.env.NODE_ENV
   ? `config.${process.env.NODE_ENV.toLowerCase()}.json`
   : "config.prod.json";
 
+const filePath = path.join(__dirname, "..", "secrets", file);
+log.info('Loading config from file.', { filePath });
 const fileValues: string = JSON.parse(
-  readFileSync(path.join(__dirname, "..", "..", "secrets", file)).toString(),
+  readFileSync(filePath).toString(),
 );
 
 const validation = Config.decode(fileValues);

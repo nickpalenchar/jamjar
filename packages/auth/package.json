@@ -5,10 +5,11 @@
   "main": "start.js",
   "scripts": {
     "test": "NODE_ENV=TEST jest",
-    "start": "./dist/start.js",
+    "start": "npm run build && node ./dist/start.js",
     "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/start.js",
     "dev": "concurrently npm:build:watch npm:prettier:watch npm:start:watch",
     "build:watch": "tsup start.ts --watch",
+    "build": "tsup start.ts",
     "prettier:watch": "onchange -d 10000 \"**/*.ts\" -- prettier --write --ignore-unknown {{changed}}"
   },
   "type": "commonjs",

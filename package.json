@@ -6,7 +6,9 @@
   "scripts": {
     "script:initialize-environment": "./scripts/initialize-environment.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prisma:migrate": "prisma migrate dev --name init --schema ./packages/database/schema.prisma"
+    "prisma:migrate": "prisma migrate dev --name init --schema ./packages/database/schema.prisma",
+    "start": "concurrently -n auth,api \"npm -w @jamjar/auth start\" \"npm -w @jamjar/api start\"",
+    "dev": "concurrently -c auto -n auth,api \"npm -w @jamjar/auth run dev\" \"npm -w @jamjar/api run dev\""
   },
   "workspaces": [
     "packages/*"
@@ -24,6 +26,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
+    "concurrently": "^8.2.2",
     "winston": "^3.11.0"
   }
 }

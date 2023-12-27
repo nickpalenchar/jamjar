@@ -2,7 +2,7 @@ import winston from "winston";
 
 const log = winston.createLogger({
   level: process.env.LOGLEVEL?.toLowerCase() ?? 'info',
-  defaultMeta: { service: 'workers' }
+  defaultMeta: { service: 'api' }
 });
 
 if (process.env.NODE_ENV !== 'production') {
