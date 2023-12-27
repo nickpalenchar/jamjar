@@ -3,7 +3,6 @@ import { type Server } from "http";
 import { getLogger } from "./logging";
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { config } from "./config";
-import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";
 import { devStrategy, basicAuthStrategy } from "./authStrategies";
 import { AuthenticationResult } from "./middleware/types";
@@ -51,6 +50,7 @@ export const start = () => {
     next();
   });
   
+  log.info('Proxying requests', { proxyTarget: config.DEPENDENCY_API });
   app.use(createProxyMiddleware({
     target: config.DEPENDENCY_API,
     changeOrigin: true,

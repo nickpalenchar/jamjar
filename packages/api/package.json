@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./dist/index.js",
+    "start": "npm run build && node ./dist/index.js",
     "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/index.js",
-    "dev": "concurrently npm:build:watch npm:prettier:watch npm:start:watch",
+    "dev": "concurrently -n build,format,PROC npm:build:watch npm:prettier:watch npm:start:watch",
     "build:watch": "tsup src/index.ts --watch",
+    "build": "tsup src/index.ts",
     "prettier:watch": "onchange -d 10000 \"**/*.ts\" -- prettier --write --ignore-unknown {{changed}}"
   },
   "type": "commonjs",

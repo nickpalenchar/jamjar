@@ -1,8 +1,9 @@
 import { Middleware } from "./types";
-import { prisma } from "@jamjar/database";
+import { PrismaClient } from "@prisma/client";
 import { getLogger } from "../logging";
 import { Logger } from "winston";
 
+const prisma = new PrismaClient();
 interface Context {
   log: Logger;
   principal: {
@@ -10,35 +11,26 @@ interface Context {
   };
 }
 
-const getUserFromSessionId = async (
-  sessionId?: string,
+const getUserFromUserContext = async (
+  userContext?: string,
 ): Promise<Record<string, any> | null> => {
-  if (!sessionId) {
-    return null;
-  }
-
-  const session = await prisma.session.findFirst({
-    where: {
-      id: sessionId,
-    },
-  });
-  if (!session) {
+  if (!userContext) {
     return null;
   }
   const user = await prisma.user.findFirst({
     where: {
-      id: session.userId,
+      id: userContext,
     },
   });
   return user;
 };
 
 export const createContext: Middleware = async (req, res, next) => {
-  const sessionId = req.headers["authorization"]?.split(" ")?.[1];
+  const sessionId = req.headers["user-context"]?.toString();
   const context: Context = {
     log: getLogger(),
     principal: {
-      user: await getUserFromSessionId(sessionId),
+      user: await getUserFromUserContext(sessionId),
     },
   };
   req.body.context = context;
