@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { Middleware, Context } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { allowedFields } from "../../dbhelper/allowedFields";
+import { getLogger } from "../../logging";
+const log = getLogger();
 
 const prisma = new PrismaClient();
 
@@ -34,14 +36,14 @@ export const newQueueSong: Middleware = async (req, res, next) => {
     data: {
       jamId: jam.id,
       userId: context.principal.user.id,
-      name: "Test",
+      name: "Test2",
       artist: "Artist name",
       imageUrl: "#",
-      spotifyUri,
+      spotifyUri: spotifyUri.toString(),
     },
   });
 
-  const updatedJam = await prisma.jam.update({
+  await prisma.jam.update({
     where: {
       id: jam.id,
     },

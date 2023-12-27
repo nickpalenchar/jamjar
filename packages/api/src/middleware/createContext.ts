@@ -13,6 +13,7 @@ const getUserFromUserContext = async (
     where: {
       id: userContext,
     },
+    include: { Jam: true },
   });
   return user;
 };

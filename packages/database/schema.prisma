@@ -18,6 +18,17 @@ model User {
   Jam        Jam[]
   QueueSongs QueueSongs[]
   Session    Session[]
+  UserInJam  UserInJam[]
+}
+
+model UserInJam {
+  id     String @id @unique @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  jam    Jam    @relation(fields: [jamId], references: [id])
+  jamId  String
+
+  vibes Int @default(5)
 }
 
 model Session {
@@ -36,6 +47,7 @@ model Jam {
   exp        DateTime
   QueueSongs QueueSongs[]
   Worker     Worker[]
+  UserInJam  UserInJam[]
 }
 
 model QueueSongs {
