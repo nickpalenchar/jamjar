@@ -21,9 +21,15 @@ const file = process.env.NODE_ENV
   ? `config.${process.env.NODE_ENV.toLowerCase()}.json`
   : "config.prod.json";
 
-const filePath = path.join(__dirname, "..", "config", file);
-log.info("Loading config from file.", { filePath });
-const fileValues: string = JSON.parse(readFileSync(filePath).toString());
+const filePathFromDist = path.join(__dirname, "..", "config", file);
+const filePathFromSrc = path.join(__dirname, "..", "..", "config", file);
+
+let fileValues;
+try {
+  fileValues = JSON.parse(readFileSync(filePathFromDist).toString());
+} catch (e) {
+  fileValues = JSON.parse(readFileSync(filePathFromSrc).toString());
+}
 
 const validation = Config.decode(fileValues);
 
