@@ -31,6 +31,9 @@ export const allowedFields = (
     return result;
   }
   const docMap = allowedFieldsConfig[documentType];
+  if (!docMap) {
+    return result;
+  }
   for (const key of docMap.fields) {
     if (docMap.fieldMappings?.[key]) {
       result[docMap.fieldMappings[key]] = document[key];

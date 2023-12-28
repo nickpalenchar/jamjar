@@ -20,7 +20,6 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   if (!(direction === "up" || direction === "down")) {
     return next(httpErrors.BadRequest('Direction must be "up" or "down".'));
   }
-
   const userInJam = await prisma.userInJam.findFirst({
     where: {
       jamId,
@@ -42,21 +41,29 @@ export const voteOnSong: Middleware = async (req, res, next) => {
     );
   }
 
+  const action = direction === "up" ? { increment: 1 } : { decrement: 1 };
+
   const updatedQueueSong = await prisma.queueSongs.update({
     where: {
       jamId,
       id: songId,
     },
     data: {
-      rank: {
-        increment: 1,
-      },
+      rank: action,
     },
   });
 
   if (!updatedQueueSong) {
     return next(httpErrors.NotFound("Could not find Song to update"));
   }
+  if (updatedQueueSong.rank < 1) {
+    await prisma.queueSongs.delete({
+      where: {
+        id: updatedQueueSong.id,
+      },
+    });
+  }
+
   await prisma.userInJam.update({
     where: { id: userInJam.id },
     data: {
@@ -64,8 +71,11 @@ export const voteOnSong: Middleware = async (req, res, next) => {
     },
   });
 
-  res.status(201).send({
+  res.status(200).send({
     userVibes: userInJam.vibes - 1,
-    song: allowedFields("queueSongs", updatedQueueSong),
+    song:
+      updatedQueueSong.rank > 0
+        ? allowedFields("queueSongs", updatedQueueSong)
+        : null,
   });
 };
