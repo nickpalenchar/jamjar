@@ -7,7 +7,7 @@
     "test": "NODE_ENV=TEST jest",
     "start": "npm run build && node ./dist/start.js",
     "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/start.js",
-    "dev": "concurrently npm:build:watch npm:prettier:watch npm:start:watch",
+    "dev": "concurrently -c gray,magenta,red npm:build:watch npm:prettier:watch npm:start:watch",
     "build:watch": "tsup start.ts --watch",
     "build": "tsup start.ts",
     "prettier:watch": "onchange -d 10000 \"**/*.ts\" -- prettier --write --ignore-unknown {{changed}}"
@@ -17,6 +17,7 @@
   "author": "Nick Palenchar <nickpal@nickpalenchar.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.6",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
     "@types/supertest": "^6.0.1",
@@ -32,6 +33,7 @@
   "dependencies": {
     "@prisma/client": "^5.7.1",
     "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
     "date-fns": "^3.0.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",

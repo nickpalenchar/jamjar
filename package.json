@@ -8,10 +8,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma:migrate": "prisma migrate dev --name init --schema ./packages/database/schema.prisma",
     "start": "concurrently -n auth,api \"npm -w @jamjar/auth start\" \"npm -w @jamjar/api start\"",
-    "dev": "concurrently -c auto -n auth,api \"npm -w @jamjar/auth run dev\" \"npm -w @jamjar/api run dev\""
+    "dev:backend": "concurrently -c red,yellow -n auth,api \"npm -w @jamjar/auth run dev\" \"npm -w @jamjar/api run dev\"",
+    "dev:frontend": "concurrently -c green -n frontend \"npm -w @jamjar/frontend run dev\"",
+    "dev": "concurrently -c bgGreen,bgBlue -n F,B npm:dev:frontend npm:dev:backend",
+    "create": "create-react-app frontend --template typescript"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "frontend"
   ],
   "keywords": [],
   "author": "",
@@ -20,6 +24,7 @@
     "prisma": "^5.7.0"
   },
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "create-react-app": "^5.0.1"
   }
 }

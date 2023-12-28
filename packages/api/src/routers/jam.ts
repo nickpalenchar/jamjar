@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   newJam,
-  getJamQueue,
+  getJam,
   newQueueSong,
   voteOnSong,
   joinJam,
@@ -9,7 +9,7 @@ import {
 
 export const jam = Router();
 
-jam.get("/:jamId/queue", getJamQueue);
+jam.get("/:jamId", getJam);
 
 jam.post("/", newJam);
 jam.post("/:jamId/join", joinJam);

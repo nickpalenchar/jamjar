@@ -10,7 +10,7 @@ interface FieldSpec {
 
 const allowedFieldsConfig: Partial<Record<keyof PrismaClient, FieldSpec>> = {
   jam: {
-    fields: ["id", "phrase", "exp"],
+    fields: ["id", "phrase", "exp", "queue"],
   },
   queueSongs: {
     fields: ["id", "rank", "imageUrl", "name", "artist", "spotifyUri"],

@@ -19,6 +19,8 @@ model User {
   QueueSongs QueueSongs[]
   Session    Session[]
   UserInJam  UserInJam[]
+  // exp is only when the user is anon
+  exp        DateTime?
 }
 
 model UserInJam {
