@@ -15,6 +15,9 @@ const allowedFieldsConfig: Partial<Record<keyof PrismaClient, FieldSpec>> = {
   queueSongs: {
     fields: ["id", "rank", "imageUrl", "name", "artist", "spotifyUri"],
   },
+  userInJam: {
+    fields: ["userId", "jamId", "vibes"],
+  },
 };
 
 export const allowedFields = (
