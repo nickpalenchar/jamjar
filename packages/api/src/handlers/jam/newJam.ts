@@ -3,6 +3,7 @@ import { Middleware, Context } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { add } from "date-fns";
 import { allowedFields } from "../../dbhelper/allowedFields";
+import { generatePhrase } from "./_generatePhrase";
 
 const prisma = new PrismaClient();
 
@@ -24,11 +25,24 @@ export const newJam: Middleware = async (req, res, next) => {
       httpErrors.Conflict(`User already has active Jam '${oldJam.phrase}'`),
     );
   }
+  let customPhrase = undefined;
+  for (let i = 0; i < 5 && !customPhrase; i++) {
+    const phrase = generatePhrase();
+    const jamWithPhrase = await prisma.jam.findFirst({
+      where: {
+        phrase,
+      }
+    });
+    if (!jamWithPhrase) {
+      customPhrase = { phrase }
+    }
+  }
   const jam = await prisma.jam.create({
     data: {
       userId: context.principal.user.id,
       spotify: "",
       exp: add(new Date(), { hours: 6 }),
+      ...customPhrase
     },
   });
 
