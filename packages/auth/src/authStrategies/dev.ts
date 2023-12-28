@@ -1,6 +1,8 @@
-import { prisma } from "@jamjar/database";
+import { PrismaClient } from "@prisma/client";
 import { add } from "date-fns";
 import { AuthenticationResult } from "../middleware/types";
+
+const prisma = new PrismaClient();
 
 /**
  * devStrategy automatically authenticates as `admin@example.com`
