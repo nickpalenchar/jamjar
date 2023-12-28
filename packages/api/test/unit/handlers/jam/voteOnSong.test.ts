@@ -25,4 +25,27 @@ describe("voteOnSong", () => {
       userVibes: 1,
     });
   });
+
+  it("decrements the vote on a song", async () => {
+    const next: any = jest.fn();
+    await voteOnSong(
+      createReq({
+        params: {
+          jamId: jamDoc.id,
+          songId: queueSongDoc.id,
+        },
+        query: {
+          direction: "down",
+        },
+      }),
+      resStub,
+      next,
+    );
+    expect(next).not.toHaveBeenCalled();
+    expect(resStub.status).toHaveBeenCalledWith(200);
+    expect(resStub.send).toHaveBeenCalledWith({
+      song: allowedFields("queueSongs", { ...queueSongDoc, ...{ rank: 1 } }),
+      userVibes: 1,
+    });
+  });
 });
