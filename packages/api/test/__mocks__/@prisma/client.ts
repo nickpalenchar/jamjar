@@ -1,24 +1,25 @@
-import { userDoc } from "../../documents/user";
-import { jamDoc } from "../../documents/jam";
-import { userInJamDoc } from "../../documents/userInJam";
-import { sessionFindFirst } from "../../stubs/prisma";
+import {
+  queueSongsUpdate,
+  sessionFindFirst,
+  userFindFirst,
+  userInJamFindFirst,
+  userInJamUpdate,
+} from "../../stubs/prisma";
 
 class PrismaClientMock {
   session = {
     findFirst: sessionFindFirst,
   };
   user = {
-    findFirst: async ({ where }: Record<string, any>) => {
-      return where?.id === userDoc.id ? userDoc : null;
-    },
+    findFirst: userFindFirst,
   };
   userInJam = {
-    findFirst: async ({ where }: Record<string, any>) => {
-      return where?.jamId === jamDoc.id && where.userId === userDoc.id
-        ? userInJamDoc
-        : null;
-    },
+    findFirst: userInJamFindFirst,
+    update: userInJamUpdate,
   };
+  queueSongs = {
+    update: queueSongsUpdate
+  }
 }
 
 export const PrismaClient = PrismaClientMock;

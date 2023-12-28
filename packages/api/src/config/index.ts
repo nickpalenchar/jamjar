@@ -7,6 +7,7 @@ const CommonConfig = t.type({
     DEV: null,
     STAGING: null,
     PROD: null,
+    TEST: null,
   }),
   votingPrice: t.Int,
 });

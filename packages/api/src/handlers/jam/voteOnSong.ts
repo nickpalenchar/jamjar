@@ -20,7 +20,6 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   if (!(direction === "up" || direction === "down")) {
     return next(httpErrors.BadRequest('Direction must be "up" or "down".'));
   }
-
   const userInJam = await prisma.userInJam.findFirst({
     where: {
       jamId,
@@ -72,7 +71,7 @@ export const voteOnSong: Middleware = async (req, res, next) => {
     },
   });
 
-  res.status(201).send({
+  res.status(200).send({
     userVibes: userInJam.vibes - 1,
     song:
       updatedQueueSong.rank > 0

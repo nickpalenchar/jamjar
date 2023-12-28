@@ -4,7 +4,7 @@ import { getLogger } from "../logging";
 import { Logger } from "winston";
 
 const prisma = new PrismaClient();
-interface Context {
+export interface Context {
   log: Logger;
   principal: {
     user: Record<string, any> | null;
