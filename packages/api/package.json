@@ -4,7 +4,7 @@
   "description": "Workers are nodejs threads that run tasks for a given jam.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=TEST jest",
     "start": "npm run build && node ./dist/index.js",
     "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/index.js",
     "dev": "concurrently -n build,format,PROC npm:build:watch npm:prettier:watch npm:start:watch",
