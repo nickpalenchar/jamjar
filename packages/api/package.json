@@ -7,7 +7,7 @@
     "test": "NODE_ENV=TEST jest",
     "start": "npm run build && node ./dist/index.js",
     "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/index.js",
-    "dev": "concurrently -n build,format,PROC npm:build:watch npm:prettier:watch npm:start:watch",
+    "dev": "concurrently -n -c gray,magenta,blue build,format,PROC npm:build:watch npm:prettier:watch npm:start:watch",
     "build:watch": "tsup src/index.ts --watch",
     "build": "tsup src/index.ts",
     "prettier:watch": "onchange -d 3000 \"**/*.ts\" -- prettier --write --ignore-unknown {{changed}}"

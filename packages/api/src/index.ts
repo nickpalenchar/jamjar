@@ -26,7 +26,7 @@ app.get("/healthz", (req: Request, res: Response) =>
 
 // Routers //
 
-app.use("/jam", jam);
+app.use("/api/jam", jam);
 
 // Error handling //
 

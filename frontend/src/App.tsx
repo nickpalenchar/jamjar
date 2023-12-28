@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { SelectAJam } from './views/SelectAJam';
-import { Jam } from './components/Jam';
+import { Jam } from './views/Jam';
 
 const Homepage: FC = () => (
   <header className="App-header">

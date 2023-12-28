@@ -6,7 +6,10 @@ import { config } from "./config";
 import bodyParser from "body-parser";
 import { devStrategy, basicAuthStrategy } from "./authStrategies";
 import { AuthenticationResult } from "./middleware/types";
+import cookieParser from "cookie-parser";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const log = getLogger();
 
 const app = express();
@@ -15,6 +18,19 @@ let server: Server;
 
 export const start = () => {
   app.use(bodyParser.json());
+  app.use(cookieParser());
+
+  app.get("/auth/login", async (req, res) => {
+    const { type } = req.query;
+
+    if (type === "anon") {
+      const user = await prisma.user.create({
+        data: {
+          anon: true,
+        },
+      });
+    }
+  });
 
   /**
    * Authenticates based on a given strategy.
@@ -45,6 +61,7 @@ export const start = () => {
       return;
     }
     req.body.authResult = result;
+    log.warn("COOKIES?", { req: req.cookies });
     next();
   });
 
