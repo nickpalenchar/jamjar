@@ -4,7 +4,11 @@ import { jamDoc } from "../../../documents/jam";
 import { userInJamDoc } from "../../../documents/userInJam";
 import { queueSongDoc } from "../../../documents/queueSong";
 import { createReq, resStub } from "../../../stubs/express";
-import { queueSongsUpdate, userInJamFindFirst } from "../../../stubs/prisma";
+import {
+  queueSongsDelete,
+  queueSongsUpdate,
+  userInJamFindFirst,
+} from "../../../stubs/prisma";
 import httpErrors from "http-errors";
 
 jest.mock("@prisma/client");
@@ -70,5 +74,28 @@ describe("voteOnSong", () => {
     );
     expect(next).not.toHaveBeenCalledWith(httpErrors.NotFound);
     expect(queueSongsUpdate).not.toHaveBeenCalled();
+  });
+
+  it("removes the song if it gets downvoted to 0", async () => {
+    queueSongsUpdate.mockResolvedValue({
+      ...queueSongDoc,
+      ...{ rank: 0 },
+    });
+    const next: any = jest.fn();
+    await voteOnSong(
+      createReq({
+        params: {
+          jamId: jamDoc.id,
+          songId: queueSongDoc.id,
+        },
+      }),
+      resStub,
+      next,
+    );
+    expect(queueSongsDelete).toHaveBeenCalledWith({
+      where: {
+        id: queueSongDoc.id,
+      },
+    });
   });
 });

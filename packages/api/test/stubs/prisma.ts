@@ -24,25 +24,25 @@ export const userInJamFindFirst = jest
       : null;
   });
 export const userInJamUpdate = jest
-.fn()
-.mockImplementation(async ({ where, data }) => {
-  if (where.id !== userInJamDoc.id) {
-    return null;
-  }
-  if (data.vibes?.increment) {
-    return {
-      ...userInJamDoc,
-      ...{ vibes: userInJamDoc.vibes + 1 },
-    };
-  }
-  if (data.rank?.decrement) {
-    return {
-      ...userInJamDoc,
-      ...{ vibes: userInJamDoc.vibes - 1 },
-    };
-  }
-  return userInJamDoc;
-});
+  .fn()
+  .mockImplementation(async ({ where, data }) => {
+    if (where.id !== userInJamDoc.id) {
+      return null;
+    }
+    if (data.vibes?.increment) {
+      return {
+        ...userInJamDoc,
+        ...{ vibes: userInJamDoc.vibes + 1 },
+      };
+    }
+    if (data.rank?.decrement) {
+      return {
+        ...userInJamDoc,
+        ...{ vibes: userInJamDoc.vibes - 1 },
+      };
+    }
+    return userInJamDoc;
+  });
 
 export const queueSongsUpdate = jest
   .fn()
@@ -64,3 +64,4 @@ export const queueSongsUpdate = jest
     }
     return queueSongDoc;
   });
+export const queueSongsDelete = jest.fn();

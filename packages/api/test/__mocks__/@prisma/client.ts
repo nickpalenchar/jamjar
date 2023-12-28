@@ -1,4 +1,5 @@
 import {
+  queueSongsDelete,
   queueSongsUpdate,
   sessionFindFirst,
   userFindFirst,
@@ -18,8 +19,9 @@ class PrismaClientMock {
     update: userInJamUpdate,
   };
   queueSongs = {
-    update: queueSongsUpdate
-  }
+    update: queueSongsUpdate,
+    delete: queueSongsDelete,
+  };
 }
 
 export const PrismaClient = PrismaClientMock;
