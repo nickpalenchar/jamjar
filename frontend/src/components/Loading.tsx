@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 /** Displays a "Loading" state after 1200 ms. Use this
  * while waiting for the actual components to load.

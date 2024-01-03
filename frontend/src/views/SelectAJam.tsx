@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 // import Loading from "../components/Loading";
 import { MobilishView } from '../components/MobilishView';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 export const SelectAJam: FC<{}> = () => {
   const navigate = useNavigate();

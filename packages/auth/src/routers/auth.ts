@@ -51,7 +51,7 @@ authRouter.post("/login", async (req, res) => {
         exp: add(new Date(), { hours: 12 }),
       },
     });
-    res.cookie(USER_COOKIE, session.id).status(200).send();
+    return res.cookie(USER_COOKIE, session.id).status(200).send();
   }
   res.status(400).send();
 });
