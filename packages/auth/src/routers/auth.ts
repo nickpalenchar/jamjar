@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { add } from "date-fns";
 import { PrismaClient } from "@prisma/client";
+import { getLogger } from "../logging";
 
 const USER_COOKIE = "jivesession";
 const prisma = new PrismaClient();
 export const authRouter = Router();
+
+const log = getLogger();
 
 /**
  * Finds the user based on the browser cookie.
@@ -35,10 +38,37 @@ authRouter.get("/me", async (req, res) => {
   res.status(200).json(user);
 });
 
+const getUserFromSession = async (sessionId: string | null) => {
+  if (!sessionId) {
+    return null;
+  }
+  const session = await prisma.session.findFirst({
+    where: {
+      id: sessionId,
+      exp: { gt: new Date() },
+    },
+  });
+  if (!session) {
+    return null;
+  }
+  return prisma.user.findFirst({
+    where: {
+      id: session.userId,
+    },
+  });
+};
+
 authRouter.post("/login", async (req, res) => {
-  const { type } = req.query;
+  const { type, force } = req.query;
+
+  const user = await getUserFromSession(req.cookies[USER_COOKIE]);
+
+  if (user && !force) {
+    return res.status(200).json(user);
+  }
 
   if (type === "anon") {
+    log.warn("DOING ANAN");
     const user = await prisma.user.create({
       data: {
         anon: true,
@@ -51,7 +81,7 @@ authRouter.post("/login", async (req, res) => {
         exp: add(new Date(), { hours: 12 }),
       },
     });
-    return res.cookie(USER_COOKIE, session.id).status(200).send();
+    return res.cookie(USER_COOKIE, session.id).status(201).json(user);
   }
   res.status(400).send();
 });
