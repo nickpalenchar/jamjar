@@ -48,7 +48,7 @@ app.use(function fiveHundredHandler(
   if (err instanceof httpErrors.HttpError) {
     const { statusCode, message } = err;
     log.warn("http Error: ", { statusCode, message });
-    res.status(err.statusCode).send(err.message);
+    res.status(err.statusCode).json({ error: err.message });
     return;
   }
   log.error("5xx Error thrown", err);

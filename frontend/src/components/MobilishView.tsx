@@ -1,7 +1,7 @@
 /** Simple container that restricts the width to a bit more than mobile. Most
  * (if not all) views should be wrapped in this.
  */
-import { CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 
 export function MobilishView(props: any) {
   const { children } = props;
