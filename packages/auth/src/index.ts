@@ -52,7 +52,6 @@ export const start = () => {
       return;
     }
     req.body.authResult = result;
-    log.warn("COOKIES?", { req: req.cookies });
     next();
   });
 

@@ -10,6 +10,8 @@ const CommonConfig = t.type({
     TEST: null,
   }),
   votingPrice: t.Int,
+  SPOTIFY_CLIENT_ID: t.string,
+  SPOTIFY_CLIENT_SECRET: t.string,
 });
 const DevConfig = t.intersection([
   CommonConfig,
@@ -34,6 +36,10 @@ try {
 } catch (e) {
   fileValues = JSON.parse(readFileSync(filePathFromSrc).toString());
 }
+
+// Add Environment secrets.
+fileValues.SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
+fileValues.SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 
 const validation = Config.decode(fileValues);
 

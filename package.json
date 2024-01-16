@@ -10,7 +10,7 @@
     "start": "concurrently -n auth,api \"npm -w @jamjar/auth start\" \"npm -w @jamjar/api start\"",
     "dev:backend": "concurrently -c red,yellow -n auth,api \"npm -w @jamjar/auth run dev\" \"npm -w @jamjar/api run dev\"",
     "dev:frontend": "concurrently -c green -n frontend \"npm -w @jamjar/frontend run dev\"",
-    "dev": "concurrently -c bgGreen,bgBlue -n F,B npm:dev:frontend npm:dev:backend",
+    "dev": "concurrently -c bgGreen,bgBlue,yellow -n F,B npm:dev:frontend npm:dev:backend \"npm run -w @jamjar/spotify dev\"",
     "create": "create-react-app frontend --template typescript"
   },
   "workspaces": [
