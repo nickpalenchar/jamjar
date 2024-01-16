@@ -5,10 +5,12 @@ import {
   newQueueSong,
   voteOnSong,
   joinJam,
+  getJamByPhrase,
 } from "../handlers/jam";
 
 export const jam = Router();
 
+jam.get("/phrase/:phrase", getJamByPhrase);
 jam.get("/:jamId", getJam);
 
 jam.post("/", newJam);

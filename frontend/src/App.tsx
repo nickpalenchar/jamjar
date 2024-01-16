@@ -4,6 +4,7 @@ import './App.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { SelectAJam } from './views/SelectAJam';
 import { Jam } from './views/Jam';
+import { JamLookup } from './views/JamLookup';
 import { IdentityContext } from './context/Identity';
 
 const router = createBrowserRouter([
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
         <Jam />
       </IdentityContext>
     ),
+  },
+  {
+    path: '/:phrase',
+    Component: JamLookup,
   },
 ]);
 

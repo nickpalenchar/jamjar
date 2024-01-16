@@ -11,7 +11,6 @@ export class SpotifyClient {
   #clientCredentials: string | null;
 
   constructor(clientId: string, clientSecret: string) {
-    console.log({ clientId, clientSecret });
     this.#clientId = clientId;
     this.#clientSecret = clientSecret;
     this.#clientCredentials = null;

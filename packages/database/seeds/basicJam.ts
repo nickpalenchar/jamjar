@@ -24,10 +24,11 @@ async function seed() {
       data: {
         userId: user.id,
         spotify: {},
+        phrase: 'basic-test',
         exp: add(Date.now(), { hours: 6 })
       },
     });
-    console.log('\nJam:')
+    console.log(`Jam: ${jam.phrase}`)
   } finally {
     await prisma.$disconnect();
   }
