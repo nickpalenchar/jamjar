@@ -1,9 +1,12 @@
+import "dotenv/config";
+
 import express, { NextFunction, type Request, type Response } from "express";
 import { getLogger } from "./logging";
 import httpErrors from "http-errors";
 import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";
 import { jam } from "./routers/jam";
+import { health } from "./routers/health";
 
 const log = getLogger();
 
@@ -26,6 +29,7 @@ app.get("/healthz", (req: Request, res: Response) =>
 
 // Routers //
 
+app.use("/api/health", health);
 app.use("/api/jam", jam);
 
 // Error handling //

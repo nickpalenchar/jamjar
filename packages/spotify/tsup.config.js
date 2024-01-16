@@ -1,3 +1,3 @@
 export default {
-  tsconfig: 'tsconfig.json',
+  tsconfig: "tsconfig.json",
 };
