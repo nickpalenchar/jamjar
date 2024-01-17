@@ -5,7 +5,7 @@ interface UseJamLookupProps {
   phrase?: string;
 }
 
-interface UseJamApiResult {
+interface JamLookupResult {
   jamId: string | null;
   isLoading: boolean;
   error: string | null;
@@ -13,7 +13,7 @@ interface UseJamApiResult {
 
 export const useJamLookup = ({
   phrase,
-}: UseJamLookupProps): UseJamApiResult => {
+}: UseJamLookupProps): JamLookupResult => {
   const [jamId, setJamId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,9 +29,6 @@ export const useJamLookup = ({
             setIsLoading(false);
             setJamId(null);
           }
-          // setIsLoading(false);
-          // setError(response.)
-          // throw new Error(`Error fetching data for ID ${jamId}`);
         }
         const res = await response.json();
         setJamId(res.jamId);
@@ -43,6 +40,6 @@ export const useJamLookup = ({
     };
 
     fetchData();
-  }, [jamId, phrase]);
+  }, [phrase]);
   return { jamId, isLoading, error };
 };

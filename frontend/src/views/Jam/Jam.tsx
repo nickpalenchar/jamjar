@@ -4,11 +4,18 @@ import { ERROR_INACTIVE_JAM, useJamApi } from '../../hooks/useJam';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
 import { UserContext } from '../../context/Identity';
-
-const handleErrors = (error: any) => {};
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Container,
+  Input,
+} from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 export const Jam: FC<{}> = () => {
-  const navigate = useNavigate();
   const identity = useContext(UserContext);
   let { jamId } = useParams();
 
@@ -28,9 +35,29 @@ export const Jam: FC<{}> = () => {
     }
   }
   return (
-    <>
-      <div>This is the Jam component! {jamId} ) !</div>
-      <div>Hello, {identity.user.id}!</div>
-    </>
+    <Container>
+      <Tabs>
+        <TabList>
+          <Tab>🎙️ Board</Tab>
+          <Tab>
+            <AddIcon /> Search
+          </Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <h2>Board</h2>
+            <div>
+              <div>This is the Jam component! {jamId} ) !</div>
+              <div>Hello, {identity.user.id}!</div>
+              <div>Some data: {JSON.stringify(jamData)}</div>
+            </div>
+          </TabPanel>
+          <TabPanel>
+            <Input placeholder="Search..." size="lg" variant="flushed"></Input>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Container>
   );
 };
