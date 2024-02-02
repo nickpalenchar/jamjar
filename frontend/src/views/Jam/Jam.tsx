@@ -1,7 +1,6 @@
 import React, { FC, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { ERROR_INACTIVE_JAM, useJamApi } from '../../hooks/useJam';
-import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
 import { UserContext } from '../../context/Identity';
 import {
@@ -14,6 +13,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
+import { SongCard } from '../../components/SongCard';
 
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
@@ -55,6 +55,7 @@ export const Jam: FC<{}> = () => {
           </TabPanel>
           <TabPanel>
             <Input placeholder="Search..." size="lg" variant="flushed"></Input>
+            <SongCard />
           </TabPanel>
         </TabPanels>
       </Tabs>

@@ -47,7 +47,8 @@ export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
       console.log('calling get user??');
       getUser();
     }
-  }, []);
+  }, [user]);
+
   const identity = { user, loading, error };
   console.log({ identity });
   return (

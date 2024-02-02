@@ -11,13 +11,14 @@ import {
 } from '@chakra-ui/react';
 
 // Chakra base theme: https://chakra-ui.com/getting-started#chakrabaseprovider
-const { Button, Tabs, Input, Container } = chakraTheme.components;
+const { Button, Tabs, Input, Container, Card } = chakraTheme.components;
 const theme = extendBaseTheme({
   components: {
     Button,
     Tabs,
     Input,
     Container,
+    Card,
   },
 });
 
