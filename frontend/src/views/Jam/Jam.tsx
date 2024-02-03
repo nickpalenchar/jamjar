@@ -10,10 +10,9 @@ import {
   Tab,
   TabPanel,
   Container,
-  Input,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { SongCard } from '../../components/SongCard';
+import { SearchTab } from './tabs/SearchTab';
 
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
@@ -54,8 +53,7 @@ export const Jam: FC<{}> = () => {
             </div>
           </TabPanel>
           <TabPanel>
-            <Input placeholder="Search..." size="lg" variant="flushed"></Input>
-            <SongCard />
+            <SearchTab />
           </TabPanel>
         </TabPanels>
       </Tabs>
