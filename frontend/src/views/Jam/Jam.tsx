@@ -53,7 +53,7 @@ export const Jam: FC<{}> = () => {
             </div>
           </TabPanel>
           <TabPanel>
-            <SearchTab />
+            <SearchTab jamId={jamId ?? ''} />
           </TabPanel>
         </TabPanels>
       </Tabs>

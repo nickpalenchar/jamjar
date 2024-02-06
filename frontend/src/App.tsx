@@ -5,13 +5,14 @@ import { Jam } from './views/Jam';
 import { JamLookup } from './views/JamLookup';
 import { IdentityContext } from './context/Identity';
 import {
+  ChakraProvider,
   ChakraBaseProvider,
   extendBaseTheme,
   theme as chakraTheme,
 } from '@chakra-ui/react';
 
 // Chakra base theme: https://chakra-ui.com/getting-started#chakrabaseprovider
-const { Button, Tabs, Input, Container, Card } = chakraTheme.components;
+const { Button, Tabs, Input, Container, Card, Modal } = chakraTheme.components;
 const theme = extendBaseTheme({
   components: {
     Button,
@@ -19,6 +20,7 @@ const theme = extendBaseTheme({
     Input,
     Container,
     Card,
+    Modal,
   },
 });
 
@@ -44,13 +46,13 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ChakraBaseProvider theme={theme}>
+    <ChakraProvider theme={theme}>
       <div className="App">
         <header className="App-header">
           <RouterProvider router={router} />
         </header>
       </div>
-    </ChakraBaseProvider>
+    </ChakraProvider>
   );
 }
 
