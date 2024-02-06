@@ -10,24 +10,29 @@ export const SearchTab: FC = () => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    debouncedSearch.call();
+    debouncedSearch.cancel();
+    debouncedSearch.call(event.target.value);
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (query: string) => {
     console.log('checking ', query);
     if (query.length < 3) {
       return;
     }
     try {
-      // const response = await fetch(`/api/search?q=${query}`);
-      // const data = await response.json();
-      setResults([1]);
+      const response = await fetch(`/api/spotify/search?q=${query}`);
+      const data = await response.json();
+      console.log(data);
+      setResults(data.tracks.items);
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
   };
 
-  const debouncedSearch = debounce(handleSearch, { waitMs: 600 });
+  const debouncedSearch = debounce(handleSearch, {
+    waitMs: 600,
+    timing: 'leading',
+  });
 
   // TODO cancel the debounced search etc
 
