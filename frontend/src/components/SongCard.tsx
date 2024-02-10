@@ -21,7 +21,7 @@ export interface SongCardParams {
   artist: string;
 
   // other options
-  onAdd?: CallableFunction;
+  onAdd?: (spotifyUri: string) => void | Promise<void>;
 }
 
 export const SongCard: FC<SongCardParams> = ({

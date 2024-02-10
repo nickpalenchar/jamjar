@@ -11,7 +11,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { FC } from 'react';
 import { SongCard, type SongCardParams } from '../../../components/SongCard';
 import { debounce } from 'remeda';
-import { ModalBody, ModalHeader } from 'react-bootstrap';
+import { ModalBody } from 'react-bootstrap';
 import { WarningTwoIcon } from '@chakra-ui/icons';
 
 const getSongParams = (spotifyTrack: any): Omit<SongCardParams, 'onAdd'> => ({
@@ -50,13 +50,16 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
     timing: 'leading',
   });
 
-  const onAdd = async (songId: string) => {
-    const res = await fetch(`/api/jam/${jamId}/queue/${songId}/vote`, {
-      method: 'put',
-    });
+  const onAdd = async (spotifyUri: string) => {
+    const res = await fetch(
+      `/api/jam/${jamId}/queue/song?spotifyUri=${spotifyUri}`,
+      {
+        method: 'POST',
+      },
+    );
     console.log({ res });
 
-    if (res.status !== 200) {
+    if (res.status !== 201) {
       showError();
       return;
     }

@@ -38,11 +38,10 @@ export const Jam: FC<{}> = () => {
   const isUserInJam = identity.user.userInJam?.jamId === jamId;
 
   const onJoin = async () => {
-    console.log('starting join');
-    const res = await sessionFetch(`/api/jam/${jamId}/join`, {
+    await sessionFetch(`/api/jam/${jamId}/join`, {
       method: 'POST',
     });
-    console.log('joining', res);
+    // TODO maybe set some state?
   };
 
   return (
