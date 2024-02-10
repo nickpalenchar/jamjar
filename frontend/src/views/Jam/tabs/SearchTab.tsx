@@ -55,6 +55,7 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
       method: 'put',
     });
     console.log({ res });
+
     if (res.status !== 200) {
       showError();
       return;

@@ -22,8 +22,6 @@ export const UserContext = createContext<IdentityState>({
 });
 
 export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
-  console.log('doing idenityt');
-
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,8 +36,7 @@ export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
         if (!res.ok) {
           setError(`Error Fetching the user: ${res.status}`);
         } else {
-          console.log('THIS IS THE GOOD RES', res);
-          setUser({ id: '123' });
+          setUser(await res.json());
           setError(null);
         }
         setLoading(false);

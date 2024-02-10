@@ -30,12 +30,14 @@ authRouter.get("/me", async (req, res) => {
       id: session.userId,
     },
   });
+  const jam = await prisma.userInJam.findFirst({
+    where: { userId: session.userId },
+  });
   if (!user) {
     return res.status(401).send();
   }
-
   // because this is the authenticated user, we can return more info.
-  res.status(200).json(user);
+  res.status(200).json({ ...user, jam: jam?.id });
 });
 
 const getUserFromSession = async (sessionId: string | null) => {
@@ -51,11 +53,23 @@ const getUserFromSession = async (sessionId: string | null) => {
   if (!session) {
     return null;
   }
-  return prisma.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       id: session.userId,
     },
   });
+  const jam =
+    user &&
+    (await prisma.userInJam.findFirst({
+      where: {
+        userId: session.userId,
+      },
+    }));
+
+  return {
+    ...user,
+    userInJam: jam,
+  };
 };
 
 authRouter.post("/login", async (req, res) => {
@@ -68,7 +82,6 @@ authRouter.post("/login", async (req, res) => {
   }
 
   if (type === "anon") {
-    log.warn("DOING ANAN");
     const user = await prisma.user.create({
       data: {
         anon: true,

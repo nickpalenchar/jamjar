@@ -28,6 +28,10 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   });
 
   if (!userInJam) {
+    log.warn("User is not part of this jam", {
+      userId: context.principal.user.id,
+      jamId,
+    });
     return next(httpErrors.Unauthorized("User is not part of this Jam."));
   }
 
