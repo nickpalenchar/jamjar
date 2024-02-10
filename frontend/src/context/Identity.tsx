@@ -8,6 +8,10 @@ import React, {
 
 export interface User {
   id: string;
+  userInJam?: {
+    jamId: string;
+    vibes: number;
+  };
 }
 interface IdentityState {
   loading: boolean;

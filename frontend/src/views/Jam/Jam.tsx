@@ -13,6 +13,8 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
+import { JoinJamModal } from './modals/joinJamModal';
+import { sessionFetch } from '../../network/sessionFetch';
 
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
@@ -33,8 +35,20 @@ export const Jam: FC<{}> = () => {
       return <div>Jam is no Longer active</div>;
     }
   }
+  const isUserInJam = identity.user.userInJam?.jamId === jamId;
+
+  const onJoin = async () => {
+    console.log('starting join');
+    const res = await sessionFetch(`/api/jam/${jamId}/join`, {
+      method: 'POST',
+    });
+    console.log('joining', res);
+  };
+
   return (
     <Container>
+      {isUserInJam || <JoinJamModal onJoin={onJoin} />}
+
       <Tabs>
         <TabList>
           <Tab>🎙️ Board</Tab>

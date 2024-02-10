@@ -39,9 +39,12 @@ export const start = () => {
    */
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers["authorization"];
+    const asAdminHeader = req.headers["X-As-Admin"];
     let result: AuthenticationResult;
-    if (!authHeader && config.Env === "DEV") {
+    if (!authHeader && asAdminHeader && config.Env === "DEV") {
       result = await devStrategy();
+    } else if (req.cookies.jivesession) {
+      result = await basicAuthStrategy(req.cookies.jivesession);
     } else if (authHeader && authHeader.startsWith("Basic ")) {
       result = await basicAuthStrategy(authHeader.split(" ")[1]);
     } else {
