@@ -7,6 +7,7 @@ import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";
 import { jam } from "./routers/jam";
 import { health } from "./routers/health";
+import { spotify } from "./routers/spotify";
 
 const log = getLogger();
 
@@ -31,6 +32,7 @@ app.get("/healthz", (req: Request, res: Response) =>
 
 app.use("/api/health", health);
 app.use("/api/jam", jam);
+app.use("/api/spotify", spotify);
 
 // Error handling //
 

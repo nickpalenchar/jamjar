@@ -28,6 +28,10 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   });
 
   if (!userInJam) {
+    log.warn("User is not part of this jam", {
+      userId: context.principal.user.id,
+      jamId,
+    });
     return next(httpErrors.Unauthorized("User is not part of this Jam."));
   }
 
@@ -43,15 +47,26 @@ export const voteOnSong: Middleware = async (req, res, next) => {
 
   const action = direction === "up" ? { increment: 1 } : { decrement: 1 };
 
-  const updatedQueueSong = await prisma.queueSongs.update({
-    where: {
+  let updatedQueueSong;
+  try {
+    updatedQueueSong = await prisma.queueSongs.update({
+      where: {
+        jamId,
+        id: songId,
+      },
+      data: {
+        rank: action,
+      },
+    });
+  } catch (e) {
+    log.error("Error voting on song", {
       jamId,
-      id: songId,
-    },
-    data: {
-      rank: action,
-    },
-  });
+      songId,
+      userId: userInJam.userId,
+      error: e,
+    });
+    return res.status(500).send("Error updating song vote");
+  }
 
   if (!updatedQueueSong) {
     return next(httpErrors.NotFound("Could not find Song to update"));

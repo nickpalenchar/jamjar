@@ -7,7 +7,7 @@ const log = getLogger();
 
 const prisma = new PrismaClient();
 
-// POST /jam/:jamId/queue/song
+// POST /api/jam/:jamId/queue/song
 export const newQueueSong: Middleware = async (req, res, next) => {
   const { context }: { context: Context } = req.body;
   const { spotifyUri } = req.query;

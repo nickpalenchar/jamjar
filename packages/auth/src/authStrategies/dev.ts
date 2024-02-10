@@ -8,13 +8,20 @@ const prisma = new PrismaClient();
  * devStrategy automatically authenticates as `admin@example.com`
  * for testing purposes. It is only available in the development environment.
  */
-export const devStrategy = async (email = 'admin@example.com'): Promise<AuthenticationResult> => {
-  if (process.env.NODE_ENV !== 'DEV') {
-    return { success: false, reason: 'devStrategy is only available in development' }
+export const devStrategy = async (
+  email = "admin@example.com",
+): Promise<AuthenticationResult> => {
+  if (process.env.NODE_ENV !== "DEV") {
+    return {
+      success: false,
+      reason: "devStrategy is only available in development",
+    };
   }
-  let user = await prisma.user.findFirst({ where: {
-    email,
-  }});
+  let user = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
   if (!user) {
     user = await prisma.user.create({
       data: {
@@ -26,15 +33,15 @@ export const devStrategy = async (email = 'admin@example.com'): Promise<Authenti
   const session = await prisma.session.findFirst({
     where: {
       userId: user.id,
-    }
+    },
   });
   if (!session) {
     await prisma.session.create({
       data: {
         userId: user.id,
         exp: add(new Date(), { days: 30 }),
-      }
-    })
+      },
+    });
   }
-  return { success: true, type: 'user', id: user.id };
-}
+  return { success: true, type: "user", id: user.id };
+};
