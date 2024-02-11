@@ -19,9 +19,10 @@ export interface SongCardParams {
   name: string;
   /** artists[0] */
   artist: string;
+  spotifyUri: string;
 
   // other options
-  onAdd?: (spotifyUri: string) => void | Promise<void>;
+  onAdd?: (song: Omit<SongCardParams, 'onAdd'>) => void | Promise<void>;
 }
 
 export const SongCard: FC<SongCardParams> = ({
@@ -29,6 +30,7 @@ export const SongCard: FC<SongCardParams> = ({
   name,
   artist,
   id,
+  spotifyUri,
   onAdd,
 }) => {
   return (
@@ -50,7 +52,9 @@ export const SongCard: FC<SongCardParams> = ({
           <Button
             leftIcon={<PlusSquareIcon />}
             colorScheme="green"
-            onClick={() => onAdd(id)}
+            onClick={() =>
+              onAdd({ id, albumCoverUrl, name, artist, spotifyUri })
+            }
           >
             Add
           </Button>

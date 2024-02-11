@@ -15,13 +15,14 @@ import { AddIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
 import { sessionFetch } from '../../network/sessionFetch';
+import { JamTab } from './tabs/JamTab';
 
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
   let { jamId } = useParams();
 
   const { jamData, isLoading, error: jamError } = useJamApi({ jamId });
-  if (isLoading || identity.loading) {
+  if (isLoading || identity.loading || !jamData) {
     return <Loading />;
   }
   if (identity.user === null) {
@@ -43,7 +44,7 @@ export const Jam: FC<{}> = () => {
     });
     // TODO maybe set some state?
   };
-
+  console.log({ jamData });
   return (
     <Container>
       {isUserInJam || <JoinJamModal onJoin={onJoin} />}
@@ -58,12 +59,7 @@ export const Jam: FC<{}> = () => {
 
         <TabPanels>
           <TabPanel>
-            <h2>Board</h2>
-            <div>
-              <div>This is the Jam component! {jamId} ) !</div>
-              <div>Hello, {identity.user.id}!</div>
-              <div>Some data: {JSON.stringify(jamData)}</div>
-            </div>
+            <JamTab jamData={jamData} />
           </TabPanel>
           <TabPanel>
             <SearchTab jamId={jamId ?? ''} />

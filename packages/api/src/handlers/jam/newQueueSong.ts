@@ -9,13 +9,31 @@ const prisma = new PrismaClient();
 
 // POST /api/jam/:jamId/queue/song
 export const newQueueSong: Middleware = async (req, res, next) => {
-  const { context }: { context: Context } = req.body;
-  const { spotifyUri } = req.query;
+  const {
+    context,
+    albumCoverUrl,
+  }: { context: Context; albumCoverUrl: string; artist: string } = req.body;
   const { jamId } = req.params;
+  const { spotifyUri, name, artist, imageUrl } = req.body;
 
   if (!context.principal.user) {
     return next(httpErrors.Unauthorized());
   }
+  const REQUIRED_FILEDS = ["spotifyUri", "name", "artist", "imageUrl"];
+  const missingFields = [];
+  for (const field of REQUIRED_FILEDS) {
+    if (!req.body[field]) {
+      missingFields.push(field);
+    }
+  }
+  if (missingFields.length) {
+    return next(
+      httpErrors.BadRequest(
+        `Request needs properties: ${missingFields.join(",")}`,
+      ),
+    );
+  }
+
   if (!spotifyUri) {
     return next(httpErrors.BadRequest("Missing param spotifyUri"));
   }
@@ -36,10 +54,11 @@ export const newQueueSong: Middleware = async (req, res, next) => {
     data: {
       jamId: jam.id,
       userId: context.principal.user.id,
-      name: "Test2",
-      artist: "Artist name",
-      imageUrl: "#",
+      name: name,
+      artist: artist,
+      imageUrl: imageUrl,
       spotifyUri: spotifyUri.toString(),
+      ...(albumCoverUrl && { imageUrl: albumCoverUrl }),
     },
   });
 

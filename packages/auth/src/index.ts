@@ -9,6 +9,7 @@ import { AuthenticationResult } from "./middleware/types";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import { authRouter } from "./routers/auth";
+import cors from "cors";
 
 const prisma = new PrismaClient();
 const log = getLogger();
@@ -20,6 +21,7 @@ let server: Server;
 export const start = () => {
   app.use(bodyParser.json());
   app.use(cookieParser());
+  app.use(cors());
 
   app.use("/auth", authRouter);
 
@@ -39,7 +41,7 @@ export const start = () => {
    */
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers["authorization"];
-    const asAdminHeader = req.headers["X-As-Admin"];
+    const asAdminHeader = req.header("X-As-Admin");
     let result: AuthenticationResult;
     if (!authHeader && asAdminHeader && config.Env === "DEV") {
       result = await devStrategy();
@@ -58,7 +60,6 @@ export const start = () => {
     next();
   });
 
-  log.info("Proxying requests", { proxyTarget: config.DEPENDENCY_API });
   app.use(
     createProxyMiddleware({
       target: config.DEPENDENCY_API,

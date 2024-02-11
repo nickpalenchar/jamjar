@@ -6,7 +6,6 @@ import { JamLookup } from './views/JamLookup';
 import { IdentityContext } from './context/Identity';
 import {
   ChakraProvider,
-  ChakraBaseProvider,
   extendBaseTheme,
   theme as chakraTheme,
 } from '@chakra-ui/react';

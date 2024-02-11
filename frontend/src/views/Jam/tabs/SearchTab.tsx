@@ -19,6 +19,7 @@ const getSongParams = (spotifyTrack: any): Omit<SongCardParams, 'onAdd'> => ({
   name: spotifyTrack.name,
   artist: spotifyTrack.artists[0].name,
   id: spotifyTrack.id,
+  spotifyUri: spotifyTrack.uri,
 });
 
 export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
@@ -37,7 +38,7 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
       return;
     }
     try {
-      const response = await fetch(`/api/spotify/search?q=${query}&limit=5`);
+      const response = await fetch(`/api/spotify/search?q=${query}&limit=8`);
       const data = await response.json();
       setResults(data.tracks.items.slice(0, 6));
     } catch (error) {
@@ -50,13 +51,20 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
     timing: 'leading',
   });
 
-  const onAdd = async (spotifyUri: string) => {
-    const res = await fetch(
-      `/api/jam/${jamId}/queue/song?spotifyUri=${spotifyUri}`,
-      {
-        method: 'POST',
+  const onAdd = async (song: Omit<SongCardParams, 'onAdd'>) => {
+    console.log('MAKING REQUEST');
+    const res = await fetch(`/api/jam/${jamId}/queue/song`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        spotifyUri: song.spotifyUri,
+        name: song.name,
+        artist: song.artist,
+        imageUrl: song.albumCoverUrl,
+      }),
+    });
     console.log({ res });
 
     if (res.status !== 201) {
@@ -75,7 +83,8 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
         value={query}
       ></Input>
       {results.map((result, i: number) => {
-        const { albumCoverUrl, artist, name, id } = getSongParams(result);
+        const { albumCoverUrl, artist, name, id, spotifyUri } =
+          getSongParams(result);
         console.log({ albumCoverUrl });
         return (
           <SongCard
@@ -84,6 +93,7 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
             id={id}
             name={name}
             artist={artist}
+            spotifyUri={spotifyUri}
             onAdd={onAdd}
           />
         );

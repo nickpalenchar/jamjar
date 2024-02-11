@@ -25,7 +25,7 @@ export const getJamByPhrase: Middleware = async (req, res, next) => {
     return next(httpErrors.Gone("The jam is no longer active."));
   }
 
-  res.status(201).json({
+  res.status(200).json({
     jamId: jam.id,
   });
 };
