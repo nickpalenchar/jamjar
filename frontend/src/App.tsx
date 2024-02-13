@@ -39,7 +39,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/:phrase',
-    Component: JamLookup,
+    element: (
+      <IdentityContext>
+        <JamLookup />
+      </IdentityContext>
+    ),
   },
 ]);
 

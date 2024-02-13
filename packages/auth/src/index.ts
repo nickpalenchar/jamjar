@@ -1,7 +1,7 @@
 import express, { NextFunction, type Request, type Response } from "express";
 import { type Server } from "http";
 import { getLogger } from "./logging";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import { config } from "./config";
 import bodyParser from "body-parser";
 import { devStrategy, basicAuthStrategy } from "./authStrategies";
@@ -61,12 +61,12 @@ export const start = () => {
   app.use(
     createProxyMiddleware({
       target: config.DEPENDENCY_API,
-      changeOrigin: true,
+      // changeOrigin: true,
       onProxyReq: (proxyReq, req, res) => {
         proxyReq.setHeader("User-Context", req.body.authResult.id);
-        delete req.body.authResult;
-        proxyReq.write(JSON.stringify({ foo: "bar" }));
-        proxyReq.end();
+        // delete req.body.authResult;
+        // proxyReq.write(JSON.stringify({ foo: "bar" }));
+        fixRequestBody(proxyReq, req);
       },
     }),
   );

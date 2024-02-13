@@ -5,6 +5,7 @@ import React, {
   useEffect,
   createContext,
 } from 'react';
+import { Loading } from '../components/Loading';
 
 export interface User {
   id: string;
@@ -27,7 +28,7 @@ export const UserContext = createContext<IdentityState>({
 
 export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,8 +51,11 @@ export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [user]);
 
+  if (loading) {
+    return <Loading />;
+  }
   const identity = { user, loading, error };
-  console.log({ identity });
+
   return (
     <UserContext.Provider value={identity}>{children}</UserContext.Provider>
   );

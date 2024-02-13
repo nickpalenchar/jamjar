@@ -21,7 +21,6 @@ export const useJamLookup = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('USE JAM LOO');
         const response = await fetch(`/api/jam/phrase/${phrase}`);
         if (!response.ok) {
           if (response.status === 410) {

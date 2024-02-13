@@ -56,9 +56,12 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
     console.log('MAKING REQUEST');
     const res = await sessionFetch(`/api/jam/${jamId}/queue/song`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         spotifyUri: song.spotifyUri,
         name: song.name,
+        artist: song.artist,
+        imageUrl: song.albumCoverUrl,
       }),
     });
     console.log({ res });
