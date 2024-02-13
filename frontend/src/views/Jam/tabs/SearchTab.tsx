@@ -58,12 +58,7 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        spotifyUri: song.spotifyUri,
-        name: song.name,
-        artist: song.artist,
-        imageUrl: song.albumCoverUrl,
-      }),
+      body: '{}',
     });
     console.log({ res });
 

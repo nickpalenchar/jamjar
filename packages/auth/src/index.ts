@@ -9,7 +9,6 @@ import { AuthenticationResult } from "./middleware/types";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import { authRouter } from "./routers/auth";
-import cors from "cors";
 
 const prisma = new PrismaClient();
 const log = getLogger();
@@ -21,7 +20,6 @@ let server: Server;
 export const start = () => {
   app.use(bodyParser.json());
   app.use(cookieParser());
-  app.use(cors());
 
   app.use("/auth", authRouter);
 

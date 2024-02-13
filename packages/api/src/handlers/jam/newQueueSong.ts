@@ -15,7 +15,6 @@ export const newQueueSong: Middleware = async (req, res, next) => {
   }: { context: Context; albumCoverUrl: string; artist: string } = req.body;
   const { jamId } = req.params;
   const { spotifyUri, name, artist, imageUrl } = req.body;
-
   if (!context.principal.user) {
     return next(httpErrors.Unauthorized());
   }
