@@ -62,9 +62,11 @@ export const start = () => {
     createProxyMiddleware({
       target: config.DEPENDENCY_API,
       changeOrigin: true,
-      onProxyReq: (proxyReq, req) => {
+      onProxyReq: (proxyReq, req, res) => {
         proxyReq.setHeader("User-Context", req.body.authResult.id);
         delete req.body.authResult;
+        proxyReq.write(JSON.stringify({ foo: "bar" }));
+        proxyReq.end();
       },
     }),
   );
