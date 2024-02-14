@@ -5,7 +5,7 @@ import { allowedFields } from "../../dbhelper/allowedFields";
 
 const prisma = new PrismaClient();
 
-// POST /jam/:jamId/queue/
+// GET /jam/:jamId/queue/
 export const getJam: Middleware = async (req, res, next) => {
   const { context }: { context: Context } = req.body;
   const { jamId } = req.params;
@@ -28,10 +28,10 @@ export const getJam: Middleware = async (req, res, next) => {
   const jamFields = allowedFields("jam", jam);
 
   const standings = jam.QueueSongs.sort((a, b) =>
-    a.rank > b.rank ? 1 : -1,
+    a.rank > b.rank ? -1 : 1,
   ).map((q) => allowedFields("queueSongs", q));
 
-  res.status(201).send({
+  res.status(200).send({
     ...jamFields,
     queue: standings,
   });

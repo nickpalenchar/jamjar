@@ -7,6 +7,7 @@ import {
   Card,
   Spacer,
   Button,
+  Box,
 } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
@@ -34,7 +35,7 @@ export const SongCard: FC<SongCardParams> = ({
   onAdd,
 }) => {
   return (
-    <Card variant="outline" padding="0.8em">
+    <Box>
       <Flex>
         <Center>
           <Image src={albumCoverUrl} boxSize="5em" alt="Album Cover" />
@@ -60,6 +61,6 @@ export const SongCard: FC<SongCardParams> = ({
           </Button>
         )}
       </Flex>
-    </Card>
+    </Box>
   );
 };

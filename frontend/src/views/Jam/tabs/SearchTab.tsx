@@ -1,5 +1,6 @@
 import {
   Button,
+  Card,
   Input,
   Modal,
   ModalContent,
@@ -80,21 +81,24 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
         variant="flushed"
         onChange={handleInputChange}
         value={query}
+        margin="0.8em"
       ></Input>
       {results.map((result, i: number) => {
         const { albumCoverUrl, artist, name, id, spotifyUri } =
           getSongParams(result);
         console.log({ albumCoverUrl });
         return (
-          <SongCard
-            key={i.toString()}
-            albumCoverUrl={albumCoverUrl}
-            id={id}
-            name={name}
-            artist={artist}
-            spotifyUri={spotifyUri}
-            onAdd={onAdd}
-          />
+          <Card variant="outline" padding="0.8em" margin="0.2em">
+            <SongCard
+              key={i.toString()}
+              albumCoverUrl={albumCoverUrl}
+              id={id}
+              name={name}
+              artist={artist}
+              spotifyUri={spotifyUri}
+              onAdd={onAdd}
+            />
+          </Card>
         );
       })}
       <Modal isOpen={isOpen} onClose={onClose}>

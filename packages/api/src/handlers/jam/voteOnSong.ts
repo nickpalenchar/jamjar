@@ -8,7 +8,7 @@ const log = getLogger();
 
 const prisma = new PrismaClient();
 
-// POST /jam/:jamId/queue/:songId/vote
+// PUT /api/jam/:jamId/queue/:songId/vote
 export const voteOnSong: Middleware = async (req, res, next) => {
   const { context }: { context: Context } = req.body;
   const { direction = "up" } = req.query;
@@ -86,11 +86,29 @@ export const voteOnSong: Middleware = async (req, res, next) => {
     },
   });
 
+  const updatedJam = await prisma.jam.findFirst({
+    where: {
+      id: jamId,
+    },
+    include: {
+      QueueSongs: true,
+    },
+  });
+
+  if (!updatedJam) {
+    return next(httpErrors.NotFound("Cannot update song"));
+  }
+
+  const standings = updatedJam.QueueSongs.sort((a, b) =>
+    a.rank > b.rank ? 1 : -1,
+  ).map((q) => allowedFields("queueSongs", q));
+
   res.status(200).send({
     userVibes: userInJam.vibes - 1,
     song:
       updatedQueueSong.rank > 0
         ? allowedFields("queueSongs", updatedQueueSong)
         : null,
+    updatedQueue: standings,
   });
 };

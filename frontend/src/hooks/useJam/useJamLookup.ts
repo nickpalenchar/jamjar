@@ -30,6 +30,7 @@ export const useJamLookup = ({
           }
         }
         const res = await response.json();
+        console.log('fetch response', { code: response.status, res });
         setJamId(res.jamId);
       } catch (error) {
         setError(error as string);
