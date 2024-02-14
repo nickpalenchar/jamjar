@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import { ERROR_INACTIVE_JAM } from './errors';
 
-interface JamData {
+export interface JamData {
   id: number;
-  title: string;
-  description: string;
+  phrase: string;
+  queue: Array<QueueItem>;
+}
+interface QueueItem {
+  artist: string;
+  id: string;
+  imageUrl: string;
+  name: string;
+  rank: number;
+  uri: string;
+  albumImageUrl: string;
 }
 
 interface UseJamApiProps {

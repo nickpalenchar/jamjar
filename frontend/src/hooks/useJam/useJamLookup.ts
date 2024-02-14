@@ -21,7 +21,6 @@ export const useJamLookup = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('USE JAM LOO');
         const response = await fetch(`/api/jam/phrase/${phrase}`);
         if (!response.ok) {
           if (response.status === 410) {
@@ -31,6 +30,7 @@ export const useJamLookup = ({
           }
         }
         const res = await response.json();
+        console.log('fetch response', { code: response.status, res });
         setJamId(res.jamId);
       } catch (error) {
         setError(error as string);

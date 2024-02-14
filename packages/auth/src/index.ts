@@ -1,7 +1,7 @@
 import express, { NextFunction, type Request, type Response } from "express";
 import { type Server } from "http";
 import { getLogger } from "./logging";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import { config } from "./config";
 import bodyParser from "body-parser";
 import { devStrategy, basicAuthStrategy } from "./authStrategies";
@@ -39,7 +39,7 @@ export const start = () => {
    */
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers["authorization"];
-    const asAdminHeader = req.headers["X-As-Admin"];
+    const asAdminHeader = req.header("X-As-Admin");
     let result: AuthenticationResult;
     if (!authHeader && asAdminHeader && config.Env === "DEV") {
       result = await devStrategy();
@@ -58,14 +58,15 @@ export const start = () => {
     next();
   });
 
-  log.info("Proxying requests", { proxyTarget: config.DEPENDENCY_API });
   app.use(
     createProxyMiddleware({
       target: config.DEPENDENCY_API,
-      changeOrigin: true,
-      onProxyReq: (proxyReq, req) => {
+      // changeOrigin: true,
+      onProxyReq: (proxyReq, req, res) => {
         proxyReq.setHeader("User-Context", req.body.authResult.id);
-        delete req.body.authResult;
+        // delete req.body.authResult;
+        // proxyReq.write(JSON.stringify({ foo: "bar" }));
+        fixRequestBody(proxyReq, req);
       },
     }),
   );

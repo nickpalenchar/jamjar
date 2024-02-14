@@ -1,5 +1,6 @@
 import {
   Button,
+  Card,
   Input,
   Modal,
   ModalContent,
@@ -13,12 +14,14 @@ import { SongCard, type SongCardParams } from '../../../components/SongCard';
 import { debounce } from 'remeda';
 import { ModalBody } from 'react-bootstrap';
 import { WarningTwoIcon } from '@chakra-ui/icons';
+import { sessionFetch } from '../../../network/sessionFetch';
 
 const getSongParams = (spotifyTrack: any): Omit<SongCardParams, 'onAdd'> => ({
   albumCoverUrl: spotifyTrack.album.images.at(-1).url,
   name: spotifyTrack.name,
   artist: spotifyTrack.artists[0].name,
   id: spotifyTrack.id,
+  spotifyUri: spotifyTrack.uri,
 });
 
 export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
@@ -37,7 +40,7 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
       return;
     }
     try {
-      const response = await fetch(`/api/spotify/search?q=${query}&limit=5`);
+      const response = await fetch(`/api/spotify/search?q=${query}&limit=8`);
       const data = await response.json();
       setResults(data.tracks.items.slice(0, 6));
     } catch (error) {
@@ -50,13 +53,18 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
     timing: 'leading',
   });
 
-  const onAdd = async (spotifyUri: string) => {
-    const res = await fetch(
-      `/api/jam/${jamId}/queue/song?spotifyUri=${spotifyUri}`,
-      {
-        method: 'POST',
-      },
-    );
+  const onAdd = async (song: Omit<SongCardParams, 'onAdd'>) => {
+    console.log('MAKING REQUEST');
+    const res = await sessionFetch(`/api/jam/${jamId}/queue/song`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        spotifyUri: song.spotifyUri,
+        name: song.name,
+        artist: song.artist,
+        imageUrl: song.albumCoverUrl,
+      }),
+    });
     console.log({ res });
 
     if (res.status !== 201) {
@@ -73,19 +81,24 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
         variant="flushed"
         onChange={handleInputChange}
         value={query}
+        margin="0.8em"
       ></Input>
       {results.map((result, i: number) => {
-        const { albumCoverUrl, artist, name, id } = getSongParams(result);
+        const { albumCoverUrl, artist, name, id, spotifyUri } =
+          getSongParams(result);
         console.log({ albumCoverUrl });
         return (
-          <SongCard
-            key={i.toString()}
-            albumCoverUrl={albumCoverUrl}
-            id={id}
-            name={name}
-            artist={artist}
-            onAdd={onAdd}
-          />
+          <Card variant="outline" padding="0.8em" margin="0.2em">
+            <SongCard
+              key={i.toString()}
+              albumCoverUrl={albumCoverUrl}
+              id={id}
+              name={name}
+              artist={artist}
+              spotifyUri={spotifyUri}
+              onAdd={onAdd}
+            />
+          </Card>
         );
       })}
       <Modal isOpen={isOpen} onClose={onClose}>

@@ -11,13 +11,12 @@ export const getJamByPhrase: Middleware = async (req, res, next) => {
   const { context }: { context: Context } = req.body;
   const { phrase } = req.params;
 
-  log.error({ phrase });
   if (!context.principal.user) {
     return next(httpErrors.Unauthorized());
   }
 
   const jam = await prisma.jam.findFirst({
-    where: { phrase, exp: { gt: new Date() } },
+    where: { phrase },
     include: { QueueSongs: false },
   });
 
@@ -25,7 +24,7 @@ export const getJamByPhrase: Middleware = async (req, res, next) => {
     return next(httpErrors.Gone("The jam is no longer active."));
   }
 
-  res.status(201).json({
+  res.status(200).json({
     jamId: jam.id,
   });
 };

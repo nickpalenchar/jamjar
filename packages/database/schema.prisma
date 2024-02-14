@@ -62,11 +62,12 @@ model QueueSongs {
   jamId     String
 
   // info that can be displaed in the queue
-  rank       Int     @default(5)
-  name       String
-  artist     String
-  imageUrl   String?
-  spotifyUri String?
+  rank          Int     @default(5)
+  name          String
+  artist        String
+  imageUrl      String?
+  spotifyUri    String?
+  albumCoverUrl String?
 }
 
 model Worker {
