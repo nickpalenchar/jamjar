@@ -14,14 +14,15 @@ import {
 import { AddIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
-import { sessionFetch } from '../../network/sessionFetch';
 import { JamTab } from './tabs/JamTab';
 
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
   let { jamId } = useParams();
 
-  const { jamData, isLoading, error: jamError } = useJamApi({ jamId });
+  const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
+    jamId,
+  });
   if (isLoading || identity.loading || !jamData) {
     return <Loading />;
   }
@@ -39,7 +40,7 @@ export const Jam: FC<{}> = () => {
   const isUserInJam = identity.user.userInJam?.jamId === jamId;
 
   const onJoin = async () => {
-    await sessionFetch(`/api/jam/${jamId}/join`, {
+    await fetch(`/api/jam/${jamId}/join`, {
       method: 'POST',
     });
     // TODO maybe set some state?
@@ -59,7 +60,7 @@ export const Jam: FC<{}> = () => {
 
         <TabPanels>
           <TabPanel>
-            <JamTab jamData={jamData} />
+            <JamTab jamData={jamData} setSongQueue={setSongQueue} />
           </TabPanel>
           <TabPanel>
             <SearchTab jamId={jamId ?? ''} />

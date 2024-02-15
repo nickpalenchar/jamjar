@@ -14,7 +14,6 @@ import { SongCard, type SongCardParams } from '../../../components/SongCard';
 import { debounce } from 'remeda';
 import { ModalBody } from 'react-bootstrap';
 import { WarningTwoIcon } from '@chakra-ui/icons';
-import { sessionFetch } from '../../../network/sessionFetch';
 
 const getSongParams = (spotifyTrack: any): Omit<SongCardParams, 'onAdd'> => ({
   albumCoverUrl: spotifyTrack.album.images.at(-1).url,
@@ -54,8 +53,7 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
   });
 
   const onAdd = async (song: Omit<SongCardParams, 'onAdd'>) => {
-    console.log('MAKING REQUEST');
-    const res = await sessionFetch(`/api/jam/${jamId}/queue/song`, {
+    const res = await fetch(`/api/jam/${jamId}/queue/song`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
