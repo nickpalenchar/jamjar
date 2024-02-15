@@ -100,7 +100,7 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   }
 
   const standings = updatedJam.QueueSongs.sort((a, b) =>
-    a.rank > b.rank ? 1 : -1,
+    a.rank > b.rank ? -1 : 1,
   ).map((q) => allowedFields("queueSongs", q));
 
   res.status(200).send({
