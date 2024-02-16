@@ -1,12 +1,5 @@
-import {
-  Card,
-  Flex,
-  VStack,
-  useDisclosure,
-  IconButton,
-  Badge,
-} from '@chakra-ui/react';
-import React, { MouseEventHandler, ReactNode, useState } from 'react';
+import { Card, Flex, VStack } from '@chakra-ui/react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 import { FC } from 'react';
 import { SongCard } from '../../../components/SongCard';
 import { JamData, SetSongQueueParams } from '../../../hooks/useJam';
@@ -29,7 +22,6 @@ export const JamTab: FC<{
 }> = ({ jamData, setSongQueue }) => {
   // TODO state to prevent voting on multiple songs concurrently
   const handleUpvote = async (songId: string) => {
-    console.log('upvote clicked');
     const result = await fetch(`/api/jam/${jamData.id}/queue/${songId}/vote`, {
       method: 'PUT',
     });
@@ -41,7 +33,6 @@ export const JamTab: FC<{
     setSongQueue(updatedQueue);
   };
   const handleDownvote = async (songId: string) => {
-    console.log('downvote clicked');
     const result = await fetch(
       `/api/jam/${jamData.id}/queue/${songId}/vote?direction=down`,
       {
@@ -58,7 +49,6 @@ export const JamTab: FC<{
 
   return (
     <>
-      {JSON.stringify(jamData.queue)}
       {jamData.queue.map((song, i: number) => {
         return (
           <Card variant="outline" padding="0.8em" margin="0.2em" key={song.id}>

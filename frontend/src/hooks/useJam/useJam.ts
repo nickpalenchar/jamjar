@@ -6,7 +6,7 @@ export interface JamData {
   phrase: string;
   queue: Array<QueueItem>;
 }
-interface QueueItem {
+export interface QueueItem {
   artist: string;
   id: string;
   imageUrl: string;
