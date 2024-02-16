@@ -6,7 +6,7 @@ export interface JamData {
   phrase: string;
   queue: Array<QueueItem>;
 }
-interface QueueItem {
+export interface QueueItem {
   artist: string;
   id: string;
   imageUrl: string;
@@ -28,7 +28,9 @@ interface UseJamApiResult {
   error: string | null;
 }
 
-export const useJamApi = ({ jamId }: UseJamApiProps): [UseJamApiResult, (queueItems: QueueItem[]) => void] => {
+export const useJamApi = ({
+  jamId,
+}: UseJamApiProps): [UseJamApiResult, (queueItems: QueueItem[]) => void] => {
   const [jamData, setJamData] = useState<JamData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,8 +62,8 @@ export const useJamApi = ({ jamId }: UseJamApiProps): [UseJamApiResult, (queueIt
     fetchData();
   }, [jamId]);
 
-
-  const setQueueSongs = (queueSongs: QueueItem[]) => jamData && setJamData({ ...jamData, queue: queueSongs })
+  const setQueueSongs = (queueSongs: QueueItem[]) =>
+    jamData && setJamData({ ...jamData, queue: queueSongs });
 
   return [{ jamData, isLoading, error }, setQueueSongs];
 };

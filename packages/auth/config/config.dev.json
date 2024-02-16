@@ -1,5 +1,6 @@
 {
   "Env": "DEV",
   "DEPENDENCY_API": "http://localhost:1133",
-  "DefaultUserEmail": "admin@example.com"
+  "DefaultUserEmail": "admin@example.com",
+  "ALLOWED_HOSTS": ["suttonstreet.net", "localhost"]
 }

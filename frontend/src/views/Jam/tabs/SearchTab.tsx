@@ -14,6 +14,7 @@ import { SongCard, type SongCardParams } from '../../../components/SongCard';
 import { debounce } from 'remeda';
 import { ModalBody } from 'react-bootstrap';
 import { WarningTwoIcon } from '@chakra-ui/icons';
+import { QueueItem, SetSongQueueParams } from '../../../hooks/useJam';
 
 const getSongParams = (spotifyTrack: any): Omit<SongCardParams, 'onAdd'> => ({
   albumCoverUrl: spotifyTrack.album.images.at(-1).url,
@@ -23,7 +24,11 @@ const getSongParams = (spotifyTrack: any): Omit<SongCardParams, 'onAdd'> => ({
   spotifyUri: spotifyTrack.uri,
 });
 
-export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
+export const SearchTab: FC<{
+  jamId: string;
+  setSongQueue: (songQueue: SetSongQueueParams) => void;
+  onNewSong: (song: QueueItem) => void;
+}> = ({ jamId, onNewSong }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<number[]>([]);
   const { isOpen, onOpen: showError, onClose } = useDisclosure();
@@ -63,12 +68,13 @@ export const SearchTab: FC<{ jamId: string }> = ({ jamId }) => {
         imageUrl: song.albumCoverUrl,
       }),
     });
-    console.log({ res });
 
     if (res.status !== 201) {
       showError();
       return;
     }
+    const newSong = await res.json();
+    onNewSong(newSong);
   };
 
   return (

@@ -18,6 +18,14 @@ const app = express();
 let server: Server;
 
 export const start = () => {
+  app.use((req, res, next) => {
+    if (config.ALLOWED_HOSTS.includes(req.hostname)) {
+      return next();
+    }
+    log.error("Host header mismatch", { hostName: req.hostname });
+    res.status(403).send("Forbidden ");
+  });
+
   app.use(bodyParser.json());
   app.use(cookieParser());
 

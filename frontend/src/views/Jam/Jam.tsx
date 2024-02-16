@@ -1,6 +1,6 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ERROR_INACTIVE_JAM, useJamApi } from '../../hooks/useJam';
+import { ERROR_INACTIVE_JAM, QueueItem, useJamApi } from '../../hooks/useJam';
 import { Loading } from '../../components/Loading';
 import { UserContext } from '../../context/Identity';
 import {
@@ -19,6 +19,7 @@ import { JamTab } from './tabs/JamTab';
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
   let { jamId } = useParams();
+  const [tabIndex, setTabIndex] = useState(0);
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
@@ -45,12 +46,18 @@ export const Jam: FC<{}> = () => {
     });
     // TODO maybe set some state?
   };
-  console.log({ jamData });
+  const onNewSong = (song: QueueItem) => {
+    const updatedQueue = [song, ...jamData.queue].sort((a, b) =>
+      a.rank > b.rank ? 1 : -1,
+    );
+    setSongQueue(updatedQueue);
+    setTabIndex(0);
+  };
   return (
     <Container>
       {isUserInJam || <JoinJamModal onJoin={onJoin} />}
 
-      <Tabs>
+      <Tabs onChange={(index: number) => setTabIndex(index)} index={tabIndex}>
         <TabList>
           <Tab>🎙️ Board</Tab>
           <Tab>
@@ -63,7 +70,11 @@ export const Jam: FC<{}> = () => {
             <JamTab jamData={jamData} setSongQueue={setSongQueue} />
           </TabPanel>
           <TabPanel>
-            <SearchTab jamId={jamId ?? ''} />
+            <SearchTab
+              jamId={jamId ?? ''}
+              setSongQueue={setSongQueue}
+              onNewSong={onNewSong}
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>

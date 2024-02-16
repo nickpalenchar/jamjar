@@ -13,6 +13,7 @@ const CommonConfig = t.type({
     TEST: null,
   }),
   DEPENDENCY_API: t.string,
+  ALLOWED_HOSTS: t.array(t.string),
 });
 
 const Config = CommonConfig;
