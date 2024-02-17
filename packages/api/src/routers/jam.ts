@@ -6,13 +6,13 @@ import {
   voteOnSong,
   joinJam,
   getJamByPhrase,
-  refreshOwnVibes,
+  getJam,
 } from "../handlers/jam";
 
 export const jam = Router();
 
 jam.get("/phrase/:phrase", getJamByPhrase);
-jam.get("/:jamId", refreshOwnVibes);
+jam.get("/:jamId", getJam);
 jam.post("/:jamId/refreshOwnVibes", refreshOwnVibes);
 
 jam.post("/", newJam);

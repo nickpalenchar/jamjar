@@ -23,7 +23,7 @@ import { JamTab } from './tabs/JamTab';
 import { MiniWorker } from './miniWorker';
 
 export const Jam: FC<{}> = () => {
-  const identity = useContext(UserContext);
+  const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
   const [tabIndex, setTabIndex] = useState(0);
   const [miniWorker, setMiniWorker] = useState<any>(null);
@@ -33,10 +33,21 @@ export const Jam: FC<{}> = () => {
   });
 
   useEffect(() => {
+    if (!jamData?.id) {
+      return;
+    }
     const worker = new MiniWorker(
       5,
-      () => {
+      async () => {
         console.log('got one call');
+        const res = await fetch(`/api/jam/${jamData?.id}/refreshOwnVibes`, {
+          method: 'POST',
+        });
+        if (!res.ok) {
+          console.error('Error refreshing vibes', await res.text());
+          return;
+        }
+        const { updatedVibes } = await res.json();
       },
       { initial: true, id: 'jamWorker' },
     );
@@ -45,13 +56,13 @@ export const Jam: FC<{}> = () => {
     return () => {
       worker.terminate();
     };
-  }, []);
+  }, [jamData?.id]);
 
-  if (isLoading || identity.loading || !jamData) {
+  if (isLoading || loading || !jamData) {
     return <Loading />;
   }
-  if (identity.user === null) {
-    if (identity.error) {
+  if (user === null) {
+    if (error) {
       return <div>Something went wrong :/</div>;
     }
     return <div>Try reloading</div>;
@@ -61,7 +72,7 @@ export const Jam: FC<{}> = () => {
       return <div>Jam is no Longer active</div>;
     }
   }
-  const isUserInJam = identity.user.userInJam?.jamId === jamId;
+  const isUserInJam = user.userInJam?.jamId === jamId;
 
   const onJoin = async () => {
     await fetch(`/api/jam/${jamId}/join`, {
@@ -76,7 +87,7 @@ export const Jam: FC<{}> = () => {
     setSongQueue(updatedQueue);
     setTabIndex(0);
   };
-  const vibes = identity.user.userInJam?.vibes ?? 0;
+  const vibes = user.userInJam?.vibes ?? 0;
   const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
   return (
     <>
@@ -90,7 +101,7 @@ export const Jam: FC<{}> = () => {
         <Spacer />
         <Center color={vibeColor}>
           <Text fontSize="lg">
-            <b>{identity.user.userInJam?.vibes}</b>
+            <b>{user.userInJam?.vibes}</b>
           </Text>
           {'  '}
           <StarIcon color={vibeColor} boxSize={4} margin={'0.15em'} />

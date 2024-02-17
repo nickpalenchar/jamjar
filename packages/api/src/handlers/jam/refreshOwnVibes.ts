@@ -1,7 +1,9 @@
-import { prisma } from "@jamjar/database";
+import { PrismaClient } from "@prisma/client";
 import { Context, Middleware } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { allowedFields } from "../../dbhelper/allowedFields";
+
+const prisma = new PrismaClient();
 
 // POST /api/jam/:jamId/refreshOwnVibes
 export const refreshOwnVibes: Middleware = async (req, res, next) => {
@@ -22,20 +24,24 @@ export const refreshOwnVibes: Middleware = async (req, res, next) => {
     },
   });
 
-  // TODO check the user is part of the jam
+  const vibesToGrant = Math.floor(
+    (Date.now() - userInJam.lastUpdate.getTime()) /
+      (jam.VibeRefreshInterval * 1000),
+  );
 
-  if (!jam) {
-    return next(httpErrors.Gone("The jam is no longer active."));
+  if (vibesToGrant === 0) {
+    return res.status(200).send({ updatedVibes: userInJam.vibes });
   }
 
-  const jamFields = allowedFields("jam", jam);
-
-  const standings = jam.QueueSongs.sort((a, b) =>
-    a.rank > b.rank ? -1 : 1,
-  ).map((q) => allowedFields("queueSongs", q));
-
-  res.status(200).send({
-    ...jamFields,
-    queue: standings,
+  const updatedUserInJam = await prisma.userInJam.update({
+    where: {
+      id: userInJam.id,
+    },
+    data: {
+      lastUpdate: new Date(),
+      vibes: { increment: vibesToGrant },
+    },
   });
+
+  return res.status(200).send({ updatedVibes: updatedUserInJam.vibes });
 };

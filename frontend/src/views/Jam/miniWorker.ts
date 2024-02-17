@@ -33,7 +33,7 @@ export class MiniWorker {
   terminate() {
     console.log('worker terminated');
     if (this.id) {
-      ids.set(this.id, null)
+      ids.set(this.id, null);
     }
     clearInterval(this.#intervalId);
   }
