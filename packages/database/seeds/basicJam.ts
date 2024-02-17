@@ -24,7 +24,7 @@ async function seed() {
       data: {
         userId: user.id,
         spotify: {},
-        phrase: 'basic-test',
+        phrase: 'hello-world',
         exp: add(Date.now(), { hours: 6 })
       },
     });

@@ -66,8 +66,8 @@ export const Jam: FC<{}> = () => {
       <Flex bg="orange.100" w="100%" h="3em" marginBottom={'2em'} padding="8px">
         <Center>
           <Image
-            h="1.2em"
-            src={process.env.PUBLIC_URL + '/jive_logo_star.webp'}
+            h="1.5em"
+            src={process.env.PUBLIC_URL + '/jivelogo2-xs.webp'}
           />
         </Center>
         <Spacer />
