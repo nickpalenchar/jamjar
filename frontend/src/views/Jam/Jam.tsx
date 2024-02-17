@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ERROR_INACTIVE_JAM, QueueItem, useJamApi } from '../../hooks/useJam';
 import { Loading } from '../../components/Loading';
@@ -20,15 +20,33 @@ import { AddIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
+import { MiniWorker } from './miniWorker';
 
 export const Jam: FC<{}> = () => {
   const identity = useContext(UserContext);
   let { jamId } = useParams();
   const [tabIndex, setTabIndex] = useState(0);
+  const [miniWorker, setMiniWorker] = useState<any>(null);
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
   });
+
+  useEffect(() => {
+    const worker = new MiniWorker(
+      5,
+      () => {
+        console.log('got one call');
+      },
+      { initial: true, id: 'jamWorker' },
+    );
+    setMiniWorker(worker);
+
+    return () => {
+      worker.terminate();
+    };
+  }, []);
+
   if (isLoading || identity.loading || !jamData) {
     return <Loading />;
   }
@@ -60,7 +78,6 @@ export const Jam: FC<{}> = () => {
   };
   const vibes = identity.user.userInJam?.vibes ?? 0;
   const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
-  console.log({ vibeColor });
   return (
     <>
       <Flex bg="orange.100" w="100%" h="3em" marginBottom={'2em'} padding="8px">
