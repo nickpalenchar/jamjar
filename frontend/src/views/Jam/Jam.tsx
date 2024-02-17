@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ERROR_INACTIVE_JAM, QueueItem, useJamApi } from '../../hooks/useJam';
 import { Loading } from '../../components/Loading';
@@ -20,20 +20,54 @@ import { AddIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
+import { MiniWorker } from './miniWorker';
 
 export const Jam: FC<{}> = () => {
-  const identity = useContext(UserContext);
+  const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
   const [tabIndex, setTabIndex] = useState(0);
+  const [miniWorker, setMiniWorker] = useState<any>(null);
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
   });
-  if (isLoading || identity.loading || !jamData) {
+
+  useEffect(() => {
+    if (!jamData?.id) {
+      return;
+    }
+    const worker = new MiniWorker(
+      30,
+      async () => {
+        const res = await fetch(`/api/jam/${jamData?.id}/refreshOwnVibes`, {
+          method: 'POST',
+        });
+        if (!res.ok) {
+          console.error('Error refreshing vibes', await res.text());
+          return;
+        }
+        const { updatedVibes } = await res.json();
+        if (user?.userInJam) {
+          setUser({
+            ...user,
+            ...{ userInJam: { ...user.userInJam, vibes: updatedVibes } },
+          });
+        }
+      },
+      { initial: true, id: 'jamWorker' },
+    );
+    setMiniWorker(worker);
+
+    return () => {
+      worker.terminate();
+    };
+  }, [jamData?.id]);
+
+  if (isLoading || loading || !jamData) {
     return <Loading />;
   }
-  if (identity.user === null) {
-    if (identity.error) {
+  if (user === null) {
+    if (error) {
       return <div>Something went wrong :/</div>;
     }
     return <div>Try reloading</div>;
@@ -43,7 +77,7 @@ export const Jam: FC<{}> = () => {
       return <div>Jam is no Longer active</div>;
     }
   }
-  const isUserInJam = identity.user.userInJam?.jamId === jamId;
+  const isUserInJam = user.userInJam?.jamId === jamId;
 
   const onJoin = async () => {
     await fetch(`/api/jam/${jamId}/join`, {
@@ -58,9 +92,8 @@ export const Jam: FC<{}> = () => {
     setSongQueue(updatedQueue);
     setTabIndex(0);
   };
-  const vibes = identity.user.userInJam?.vibes ?? 0;
+  const vibes = user.userInJam?.vibes ?? 0;
   const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
-  console.log({ vibeColor });
   return (
     <>
       <Flex bg="orange.100" w="100%" h="3em" marginBottom={'2em'} padding="8px">
@@ -73,7 +106,7 @@ export const Jam: FC<{}> = () => {
         <Spacer />
         <Center color={vibeColor}>
           <Text fontSize="lg">
-            <b>{identity.user.userInJam?.vibes}</b>
+            <b>{user.userInJam?.vibes}</b>
           </Text>
           {'  '}
           <StarIcon color={vibeColor} boxSize={4} margin={'0.15em'} />
