@@ -1,9 +1,11 @@
 import { Card, Flex, VStack } from '@chakra-ui/react';
-import React, { MouseEventHandler, ReactNode } from 'react';
+import React, { MouseEventHandler, ReactNode, useContext } from 'react';
 import { FC } from 'react';
 import { SongCard } from '../../../components/SongCard';
 import { JamData, SetSongQueueParams } from '../../../hooks/useJam';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { UserContext } from '../../../context/Identity';
+import { Loading } from '../../../components/Loading';
 
 interface VoteButtonParams {
   onClick: MouseEventHandler;
@@ -21,6 +23,10 @@ export const JamTab: FC<{
   setSongQueue: (songQueue: SetSongQueueParams) => void;
 }> = ({ jamData, setSongQueue }) => {
   // TODO state to prevent voting on multiple songs concurrently
+  const { user, setUser } = useContext(UserContext);
+  if (!user) {
+    return <Loading />;
+  }
   const handleUpvote = async (songId: string) => {
     const result = await fetch(`/api/jam/${jamData.id}/queue/${songId}/vote`, {
       method: 'PUT',
@@ -29,8 +35,14 @@ export const JamTab: FC<{
       //TODO render error
       return;
     }
-    const { updatedQueue } = await result.json();
+    const { updatedQueue, userVibes } = await result.json();
     setSongQueue(updatedQueue);
+    if (user.userInJam) {
+      setUser({
+        ...user,
+        ...{ userInJam: { ...user.userInJam, vibes: userVibes } },
+      });
+    }
   };
   const handleDownvote = async (songId: string) => {
     const result = await fetch(
@@ -43,8 +55,14 @@ export const JamTab: FC<{
       //TODO render error
       return;
     }
-    const { updatedQueue } = await result.json();
+    const { updatedQueue, userVibes } = await result.json();
     setSongQueue(updatedQueue);
+    if (user.userInJam) {
+      setUser({
+        ...user,
+        ...{ userInJam: { ...user.userInJam, vibes: userVibes } },
+      });
+    }
   };
 
   return (
