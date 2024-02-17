@@ -24,11 +24,12 @@ model User {
 }
 
 model UserInJam {
-  id     String @id @unique @default(cuid())
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  jam    Jam    @relation(fields: [jamId], references: [id])
-  jamId  String
+  id         String   @id @unique @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  jam        Jam      @relation(fields: [jamId], references: [id])
+  jamId      String
+  lastUpdate DateTime @default(now())
 
   vibes Int @default(5)
 }
@@ -41,15 +42,16 @@ model Session {
 }
 
 model Jam {
-  id         String       @id @unique @default(cuid())
-  phrase     String       @unique @default(cuid())
-  owner      User         @relation(fields: [userId], references: [id])
-  userId     String
-  spotify    Json
-  exp        DateTime
-  QueueSongs QueueSongs[]
-  Worker     Worker[]
-  UserInJam  UserInJam[]
+  id                  String       @id @unique @default(cuid())
+  phrase              String       @unique @default(cuid())
+  owner               User         @relation(fields: [userId], references: [id])
+  userId              String
+  spotify             Json
+  exp                 DateTime
+  QueueSongs          QueueSongs[]
+  Worker              Worker[]
+  UserInJam           UserInJam[]
+  VibeRefreshInterval Int          @default(60)
 }
 
 model QueueSongs {

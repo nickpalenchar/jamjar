@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Jam" ADD COLUMN     "VibeRefreshInterval" INTEGER NOT NULL DEFAULT 60;
+
+-- AlterTable
+ALTER TABLE "UserInJam" ADD COLUMN     "lastUpdate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

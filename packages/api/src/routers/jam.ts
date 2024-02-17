@@ -1,17 +1,19 @@
 import { Router } from "express";
 import {
   newJam,
-  getJam,
+  refreshOwnVibes,
   newQueueSong,
   voteOnSong,
   joinJam,
   getJamByPhrase,
+  refreshOwnVibes,
 } from "../handlers/jam";
 
 export const jam = Router();
 
 jam.get("/phrase/:phrase", getJamByPhrase);
-jam.get("/:jamId", getJam);
+jam.get("/:jamId", refreshOwnVibes);
+jam.post("/:jamId/refreshOwnVibes", refreshOwnVibes);
 
 jam.post("/", newJam);
 jam.post("/:jamId/join", joinJam);
