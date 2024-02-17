@@ -37,9 +37,8 @@ export const Jam: FC<{}> = () => {
       return;
     }
     const worker = new MiniWorker(
-      5,
+      30,
       async () => {
-        console.log('got one call');
         const res = await fetch(`/api/jam/${jamData?.id}/refreshOwnVibes`, {
           method: 'POST',
         });
@@ -48,6 +47,12 @@ export const Jam: FC<{}> = () => {
           return;
         }
         const { updatedVibes } = await res.json();
+        if (user?.userInJam) {
+          setUser({
+            ...user,
+            ...{ userInJam: { ...user.userInJam, vibes: updatedVibes } },
+          });
+        }
       },
       { initial: true, id: 'jamWorker' },
     );
@@ -56,6 +61,7 @@ export const Jam: FC<{}> = () => {
     return () => {
       worker.terminate();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jamData?.id]);
 
   if (isLoading || loading || !jamData) {
