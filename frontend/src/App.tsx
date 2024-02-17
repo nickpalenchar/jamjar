@@ -11,7 +11,8 @@ import {
 } from '@chakra-ui/react';
 
 // Chakra base theme: https://chakra-ui.com/getting-started#chakrabaseprovider
-const { Button, Tabs, Input, Container, Card, Modal } = chakraTheme.components;
+const { Button, Tabs, Input, Container, Card, Modal, Heading, Alert } =
+  chakraTheme.components;
 const theme = extendBaseTheme({
   components: {
     Button,
@@ -20,6 +21,8 @@ const theme = extendBaseTheme({
     Container,
     Card,
     Modal,
+    Heading,
+    Alert,
   },
 });
 
@@ -27,7 +30,11 @@ const theme = extendBaseTheme({
 const router = createBrowserRouter([
   {
     path: '/',
-    Component: SelectAJam,
+    element: (
+      <IdentityContext>
+        <SelectAJam />
+      </IdentityContext>
+    ),
   },
   {
     path: '/jam/:jamId',
