@@ -61,6 +61,7 @@ export const Jam: FC<{}> = () => {
     return () => {
       worker.terminate();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jamData?.id]);
 
   if (isLoading || loading || !jamData) {
