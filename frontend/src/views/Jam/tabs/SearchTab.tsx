@@ -80,9 +80,10 @@ export const SearchTab: FC<{
   return (
     <>
       <Input
-        placeholder="Search..."
+        placeholder="Type Something..."
+        focusBorderColor="pink.400"
         size="lg"
-        variant="flushed"
+        variant="filled"
         onChange={handleInputChange}
         value={query}
         margin="0.8em"

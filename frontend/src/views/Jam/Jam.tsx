@@ -9,11 +9,12 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Text,
   Container,
-  Box,
   Spacer,
   Flex,
   Center,
+  Image,
 } from '@chakra-ui/react';
 import { AddIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
@@ -57,21 +58,36 @@ export const Jam: FC<{}> = () => {
     setSongQueue(updatedQueue);
     setTabIndex(0);
   };
+  const vibes = identity.user.userInJam?.vibes ?? 0;
+  const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
+  console.log({ vibeColor });
   return (
     <>
-      <Flex bg="orange.200" w="100%" h="3em" marginBottom={'2em'} padding="8px">
-        <Center>Jive</Center>
-        <Spacer />
+      <Flex bg="orange.100" w="100%" h="3em" marginBottom={'2em'} padding="8px">
         <Center>
-          {identity.user.userInJam?.vibes}
+          <Image
+            h="1.2em"
+            src={process.env.PUBLIC_URL + '/jive_logo_star.webp'}
+          />
+        </Center>
+        <Spacer />
+        <Center color={vibeColor}>
+          <Text fontSize="lg">
+            <b>{identity.user.userInJam?.vibes}</b>
+          </Text>
           {'  '}
-          <StarIcon boxSize={3} />
+          <StarIcon color={vibeColor} boxSize={4} margin={'0.15em'} />
         </Center>
       </Flex>
       <Container>
         {isUserInJam || <JoinJamModal onJoin={onJoin} />}
 
-        <Tabs onChange={(index: number) => setTabIndex(index)} index={tabIndex}>
+        <Tabs
+          variant={'soft-rounded'}
+          isFitted
+          onChange={(index: number) => setTabIndex(index)}
+          index={tabIndex}
+        >
           <TabList>
             <Tab>🎙️ Board</Tab>
             <Tab>
