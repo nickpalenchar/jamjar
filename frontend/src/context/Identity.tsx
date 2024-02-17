@@ -18,12 +18,14 @@ interface IdentityState {
   loading: boolean;
   error: string | null;
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 export const UserContext = createContext<IdentityState>({
   loading: true,
   error: null,
   user: null,
+  setUser: () => {},
 });
 
 export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
@@ -54,7 +56,9 @@ export const IdentityContext: FC<{ children: ReactNode }> = ({ children }) => {
   if (loading) {
     return <Loading />;
   }
-  const identity = { user, loading, error };
+
+  // const setUser = (user: User)
+  const identity = { user, loading, error, setUser };
 
   return (
     <UserContext.Provider value={identity}>{children}</UserContext.Provider>
