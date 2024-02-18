@@ -5,6 +5,7 @@ export interface JamData {
   id: number;
   phrase: string;
   queue: Array<QueueItem>;
+  userId: string; // owner
 }
 export interface QueueItem {
   artist: string;

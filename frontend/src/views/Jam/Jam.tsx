@@ -78,7 +78,6 @@ export const Jam: FC<{}> = () => {
       return <div>Jam is no Longer active</div>;
     }
   }
-  const isUserInJam = user.userInJam?.jamId === jamId;
 
   const onJoin = async () => {
     await fetch(`/api/jam/${jamId}/join`, {
@@ -93,6 +92,11 @@ export const Jam: FC<{}> = () => {
     setSongQueue(updatedQueue);
     setTabIndex(0);
   };
+
+  const isOwner = user?.id === (jamData?.userId ?? Symbol());
+  const isUserInJam = user.userInJam?.jamId === jamId || isOwner;
+
+  console.log({ isOwner });
   const vibes = user.userInJam?.vibes ?? 0;
   const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
   return (
@@ -126,6 +130,7 @@ export const Jam: FC<{}> = () => {
             <Tab>
               <AddIcon /> Search
             </Tab>
+            {isOwner && <Tab>Admin</Tab>}
           </TabList>
 
           <TabPanels>
@@ -138,6 +143,13 @@ export const Jam: FC<{}> = () => {
                 setSongQueue={setSongQueue}
                 onNewSong={onNewSong}
               />
+            </TabPanel>
+            <TabPanel>
+              {isOwner && (
+                <TabPanel>
+                  <div>Admin!</div>
+                </TabPanel>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>
