@@ -1,6 +1,6 @@
 {
   "Env": "DEV",
-  "rootKey": "jivemyhive",
+  "SecretsKey": "jivemyhive",
   "votingPrice": 1,
   "DOMAIN": "localhost:3000"
 }

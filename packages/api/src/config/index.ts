@@ -13,6 +13,7 @@ const CommonConfig = t.type({
   SPOTIFY_CLIENT_ID: t.string,
   SPOTIFY_CLIENT_SECRET: t.string,
   DOMAIN: t.string,
+  SecretsKey: t.string,
 });
 const DevConfig = t.intersection([
   CommonConfig,

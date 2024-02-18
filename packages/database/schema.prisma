@@ -21,6 +21,10 @@ model User {
   UserInJam  UserInJam[]
   // exp is only when the user is anon
   exp        DateTime?
+
+  // spotify
+  sec_spotifyAccessToken  String?
+  sec_spotifyRefreshToken String?
 }
 
 model UserInJam {
@@ -82,4 +86,11 @@ model SpotifyState {
   id     String   @id @unique @default(uuid())
   exp    DateTime
   userId String
+}
+
+model Secrets {
+  id             String   @id @unique @default(cuid())
+  exp            DateTime
+  encryptedValue String
+  iv             Bytes
 }

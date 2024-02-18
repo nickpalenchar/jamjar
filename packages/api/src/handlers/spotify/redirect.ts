@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import {isPast} from 'date-fns';
 import httpErrors from "http-errors";
 import { config } from "../../config";
+import { vault } from "../../vault/vault";
 
 const prisma = new PrismaClient();
 
@@ -53,5 +54,16 @@ const fetchOptions = {
   }
   const spotifyBody = await spotifyRes.json();
   const { access_token, refresh_token } = spotifyBody;
-  
+  const sec_spotifyAccessToken = await vault.save(access_token);
+  const sec_spotifyRefreshToken = await vault.save(refresh_token);
+
+  await prisma.user.update({
+    where: {
+      id: spotifyState.userId
+    },
+    data: {
+      sec_spotifyAccessToken,
+      sec_spotifyRefreshToken
+    }
+  });
 }

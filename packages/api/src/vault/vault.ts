@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 interface Vault {
   get: (id: string) => Promise<string | null>,
-  save: (value: string, { id, exp }: { id?: string, exp?: Date} ) => Promise<string>,
+  save: (value: string, { id, exp }?: { id?: string, exp?: Date} ) => Promise<string>,
 }
 
 const encrypt = async (input: string) => {
