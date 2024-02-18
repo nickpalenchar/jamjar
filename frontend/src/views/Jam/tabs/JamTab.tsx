@@ -1,4 +1,4 @@
-import { Card, Flex, VStack } from '@chakra-ui/react';
+import { Box, Card, Flex, VStack } from '@chakra-ui/react';
 import React, { MouseEventHandler, ReactNode, useContext } from 'react';
 import { FC } from 'react';
 import { SongCard } from '../../../components/SongCard';

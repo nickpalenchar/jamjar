@@ -16,11 +16,12 @@ import {
   Center,
   Image,
 } from '@chakra-ui/react';
-import { AddIcon, StarIcon } from '@chakra-ui/icons';
+import { AddIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
 import { MiniWorker } from './miniWorker';
+import { AdminTab } from './tabs/AdminTab';
 
 export const Jam: FC<{}> = () => {
   const { user, setUser, error, loading } = useContext(UserContext);
@@ -96,7 +97,6 @@ export const Jam: FC<{}> = () => {
   const isOwner = user?.id === (jamData?.userId ?? Symbol());
   const isUserInJam = user.userInJam?.jamId === jamId || isOwner;
 
-  console.log({ isOwner });
   const vibes = user.userInJam?.vibes ?? 0;
   const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
   return (
@@ -128,9 +128,14 @@ export const Jam: FC<{}> = () => {
           <TabList>
             <Tab>🎙️ Board</Tab>
             <Tab>
-              <AddIcon /> Search
+              <AddIcon margin="4px" /> Search
             </Tab>
-            {isOwner && <Tab>Admin</Tab>}
+            {isOwner && (
+              <Tab>
+                <SettingsIcon margin="4px" />
+                Admin
+              </Tab>
+            )}
           </TabList>
 
           <TabPanels>
@@ -147,7 +152,7 @@ export const Jam: FC<{}> = () => {
             <TabPanel>
               {isOwner && (
                 <TabPanel>
-                  <div>Admin!</div>
+                  <AdminTab />
                 </TabPanel>
               )}
             </TabPanel>

@@ -12,6 +12,7 @@ const CommonConfig = t.type({
   votingPrice: t.Int,
   SPOTIFY_CLIENT_ID: t.string,
   SPOTIFY_CLIENT_SECRET: t.string,
+  DOMAIN: t.string,
 });
 const DevConfig = t.intersection([
   CommonConfig,

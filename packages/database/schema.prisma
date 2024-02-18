@@ -77,3 +77,9 @@ model Worker {
   jam   Jam    @relation(fields: [jamId], references: [id])
   jamId String
 }
+
+model SpotifyState {
+  id     String   @id @unique @default(uuid())
+  exp    DateTime
+  userId String
+}
