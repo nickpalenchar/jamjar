@@ -117,7 +117,6 @@ export const Jam: FC<{}> = () => {
         {isUserInJam || <JoinJamModal onJoin={onJoin} />}
 
         <Tabs
-          variant={'soft-rounded'}
           isFitted
           onChange={(index: number) => setTabIndex(index)}
           index={tabIndex}

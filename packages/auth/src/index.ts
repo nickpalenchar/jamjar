@@ -4,7 +4,7 @@ import { getLogger } from "./logging";
 import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import { config } from "./config";
 import bodyParser from "body-parser";
-import { devStrategy, basicAuthStrategy } from "./authStrategies";
+import { devStrategy, basicAuthStrategy, devJamAdminStrategy } from "./authStrategies";
 import { AuthenticationResult } from "./middleware/types";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
@@ -51,6 +51,8 @@ export const start = () => {
     let result: AuthenticationResult;
     if (!authHeader && asAdminHeader && config.Env === "DEV") {
       result = await devStrategy();
+    } else if (req.cookies.asAdminOfJam) {
+      result = await devJamAdminStrategy(req.cookies.asAdminOfJam)
     } else if (req.cookies.jivesession) {
       result = await basicAuthStrategy(req.cookies.jivesession);
     } else if (authHeader && authHeader.startsWith("Basic ")) {

@@ -14,15 +14,21 @@ export const refreshOwnVibes: Middleware = async (req, res, next) => {
     return next(httpErrors.Unauthorized());
   }
 
-  const jam = await prisma.jam.findFirstOrThrow({
+  const jam = await prisma.jam.findFirst({
     where: { id: jamId },
   });
-  const userInJam = await prisma.userInJam.findFirstOrThrow({
+  if (!jam) {
+    return res.status(400).send();
+  }
+  const userInJam = await prisma.userInJam.findFirst({
     where: {
       userId: context.principal.user.id,
       jamId,
     },
   });
+  if (!userInJam) {
+    return res.status(400).send();
+  }
 
   const vibesToGrant = Math.floor(
     (Date.now() - userInJam.lastUpdate.getTime()) /
