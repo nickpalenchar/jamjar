@@ -5,7 +5,7 @@ import { vault } from "../../vault/vault";
 import { getLogger } from "../../logging";
 import { config } from "../../config";
 
-const ALLOWED_ROUTES = ["/v1/me/player"];
+const ALLOWED_ROUTES = ["/v1/me/player", "/v1/me/player/queue"];
 
 const log = getLogger();
 
@@ -42,11 +42,12 @@ const spotifyRequest = async (
   ) {
     // Refresh flow https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
     log.info("Requesting refresh token grant from spotify");
-    const refreshToken = await vault.get(sec_spotifyAccessToken);
+    const refreshToken = await vault.get(sec_spotifyRefreshToken);
     if (!refreshToken) {
       throw new Error("No refresh token exists");
     }
-    const refreshRes = await fetch("https://api.spotify.com/api/token", {
+
+    const refreshRes = await fetch("https://accounts.spotify.com/api/token", {
       headers: {
         "content-type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${Buffer.from(
@@ -60,7 +61,6 @@ const spotifyRequest = async (
       }),
     });
     if (refreshRes.status !== 200) {
-      console.log("EEEEE", await refreshRes.json());
       return refreshRes;
     }
     log.info("New access token received");
@@ -105,11 +105,16 @@ export const spotifyProxyApi: Middleware = async (req, res, next) => {
 
   const requestUri = `https://api.spotify.com${spotifyRoute}`;
   log.info("Making spotify proxy request", { requestUri });
-  const spotifyRes = await spotifyRequest(
-    context,
-    requestUri,
-    req.method as "get" | "post" | "put",
-  );
+  let spotifyRes;
+  try {
+    spotifyRes = await spotifyRequest(
+      context,
+      requestUri,
+      req.method as "get" | "post" | "put",
+    );
+  } catch (e) {
+    return next(httpErrors.Unauthorized());
+  }
 
   if (!spotifyRes.ok) {
     log.error("Bad response from spotify proxy", {

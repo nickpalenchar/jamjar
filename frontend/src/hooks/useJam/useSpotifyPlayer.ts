@@ -33,7 +33,9 @@ export const useSpotifyPlayer = async (): Promise<SpotifyPlayerReturn> => {
     fetch('/api/spotify/proxy-api/v1/me/player').then(
       async (res): Promise<void> => {
         if (res.ok) {
-          console.log('got the res!', await res.json());
+          if (res.status === 204) {
+            return;
+          }
         }
         console.log('respones done');
       },

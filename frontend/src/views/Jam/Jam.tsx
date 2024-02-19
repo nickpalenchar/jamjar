@@ -22,14 +22,11 @@ import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
 import { MiniWorker } from './miniWorker';
 import { AdminTab } from './tabs/AdminTab';
-import { useSpotifyPlayer } from '../../hooks/useJam/useSpotifyPlayer';
 
 export const Jam: FC<{}> = () => {
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
   const [miniWorker, setMiniWorker] = useState<any>(null);
-
-  useSpotifyPlayer();
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
