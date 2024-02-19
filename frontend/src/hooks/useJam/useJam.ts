@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ERROR_INACTIVE_JAM } from './errors';
 
 export interface JamData {
-  id: number;
+  id: string;
   phrase: string;
   queue: Array<QueueItem>;
   userId: string; // owner

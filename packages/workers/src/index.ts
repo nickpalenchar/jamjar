@@ -1,10 +1,7 @@
 "use strict";
 import express, { NextFunction, type Request, type Response } from "express";
 import {
-  Worker,
   isMainThread,
-  parentPort,
-  workerData,
 } from "node:worker_threads";
 import { router } from "./main/mainThread";
 

@@ -21,3 +21,4 @@ export const search: Middleware = async (req, res) => {
 };
 
 export * from "./authorize";
+export * from "./spotifyProxyApi";

@@ -22,16 +22,25 @@ import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
 import { MiniWorker } from './miniWorker';
 import { AdminTab } from './tabs/AdminTab';
+import { useSpotifyPlayer } from '../../hooks/useJam/useSpotifyPlayer';
 
 export const Jam: FC<{}> = () => {
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
-  const [tabIndex, setTabIndex] = useState(0);
   const [miniWorker, setMiniWorker] = useState<any>(null);
+
+  useSpotifyPlayer();
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
   });
+
+  /* eslint-disable no-restricted-globals */
+  const defaultTabIndex = Number.isNaN(parseInt(location.hash[1]))
+    ? 0
+    : parseInt(location.hash[1]);
+
+  const [tabIndex, setTabIndex] = useState(defaultTabIndex);
 
   useEffect(() => {
     if (!jamData?.id) {
@@ -64,6 +73,8 @@ export const Jam: FC<{}> = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jamData?.id]);
+
+  useEffect(() => {});
 
   if (isLoading || loading || !jamData) {
     return <Loading />;
@@ -124,6 +135,7 @@ export const Jam: FC<{}> = () => {
           isFitted
           onChange={(index: number) => setTabIndex(index)}
           index={tabIndex}
+          defaultIndex={defaultTabIndex}
         >
           <TabList>
             <Tab>🎙️ Board</Tab>
@@ -152,7 +164,7 @@ export const Jam: FC<{}> = () => {
             <TabPanel>
               {isOwner && (
                 <TabPanel>
-                  <AdminTab />
+                  <AdminTab jamId={jamData.id} />
                 </TabPanel>
               )}
             </TabPanel>

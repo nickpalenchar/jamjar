@@ -86,6 +86,7 @@ model SpotifyState {
   id     String   @id @unique @default(uuid())
   exp    DateTime
   userId String
+  jamId  String   @default("null") // hack
 }
 
 model Secrets {

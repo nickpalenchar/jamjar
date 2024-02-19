@@ -11,10 +11,10 @@ const key = crypto
   .substring(0, 32);
 
 interface Vault {
-  get: (id: string) => Promise<string | null>;
+  get: (id: string | any) => Promise<string | null>;
   save: (
     value: string,
-    { id, exp }: { id?: string; exp?: Date },
+    { id, exp, overwrite }: { id?: string; exp?: Date; overwrite?: boolean },
   ) => Promise<string>;
 }
 
@@ -34,6 +34,9 @@ const decrypt = async (input: string, iv: Buffer) => {
 
 export const vault: Vault = {
   async get(key) {
+    if (!key) {
+      return null;
+    }
     const secret = await prisma.secrets.findFirst({
       where: { id: key },
     });
@@ -43,16 +46,34 @@ export const vault: Vault = {
     return decrypt(secret.encryptedValue, secret.iv);
   },
   /** Returns id which can also be used for referencing */
-  async save(value, { id, exp = add(new Date(), { days: 30 }) }) {
+  async save(
+    value,
+    { id, exp = add(new Date(), { days: 30 }), overwrite = false },
+  ) {
     const { value: encrypted, iv } = await encrypt(value);
-    const secret = await prisma.secrets.create({
-      data: {
-        encryptedValue: encrypted,
-        iv,
-        ...(id && { id }),
-        exp,
-      },
-    });
+    const secret = overwrite
+      ? await prisma.secrets.upsert({
+          where: { id: id ?? crypto.randomBytes(16).toString("hex") },
+          update: {
+            iv,
+            encryptedValue: encrypted,
+            exp,
+          },
+          create: {
+            iv,
+            encryptedValue: encrypted,
+            exp,
+            ...(id && { id }),
+          },
+        })
+      : await prisma.secrets.create({
+          data: {
+            encryptedValue: encrypted,
+            iv,
+            ...(id && { id }),
+            exp,
+          },
+        });
     return secret.id;
   },
 };

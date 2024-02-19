@@ -8,7 +8,11 @@ const prisma = new PrismaClient();
 
 // GET /api/spotify/authorize
 export const authorize: Middleware = async (req, res, next) => {
+  const { jamId } = req.query;
   // generate state and save in
+  if (!jamId) {
+    return next(httpErrors.BadRequest("Missing JamId"));
+  }
   if (!req.body.context.principal.user) {
     return next(httpErrors.Unauthorized());
   }
@@ -16,6 +20,7 @@ export const authorize: Middleware = async (req, res, next) => {
     data: {
       exp: add(new Date(), { minutes: 10 }),
       userId: req.body.context.principal.user.id,
+      jamId: jamId?.toString(),
     },
   });
 
