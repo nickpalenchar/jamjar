@@ -10,9 +10,10 @@ const CommonConfig = t.type({
     TEST: null,
   }),
   votingPrice: t.Int,
-  SPOTIFY_CLIENT_ID: t.string,
-  SPOTIFY_CLIENT_SECRET: t.string,
+  SPOTIFY_CLIENT_ID: t.string, // from environment variables
+  SPOTIFY_CLIENT_SECRET: t.string, // from environment variables
   DOMAIN: t.string,
+  SPOTIFY_REDIRECT_URI: t.string,
   SecretsKey: t.string,
 });
 const DevConfig = t.intersection([
