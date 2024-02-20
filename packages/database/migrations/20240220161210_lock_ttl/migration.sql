@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "WorkerTask" ADD COLUMN     "ttl" INTEGER NOT NULL DEFAULT 70;

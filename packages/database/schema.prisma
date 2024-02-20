@@ -95,3 +95,20 @@ model Secrets {
   encryptedValue String
   iv             Bytes
 }
+
+model WorkerTask {
+  id        Int       @id @unique @default(autoincrement())
+  taken     Boolean   @default(false)
+  data      Json
+  task_name String
+  exp       DateTime?
+  ttl       Int       @default(70)
+}
+
+model WorkerLocks {
+  id        Int       @id @unique @default(autoincrement())
+  key       String    @unique
+  issued_to String
+  // if expired, another can take the lock
+  exp       DateTime?
+}
