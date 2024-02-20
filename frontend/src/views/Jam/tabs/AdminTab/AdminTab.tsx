@@ -30,7 +30,6 @@ export const AdminTab: FC<AdminParams> = ({ jamId }) => {
       return;
     }
     Spotify.getPlayerQueue().then(({ error, data }) => {
-      console.log('got this back', { error, data });
       if (error) {
         return setPlayerQueue('unauthorized');
       }
@@ -63,7 +62,6 @@ export const AdminTab: FC<AdminParams> = ({ jamId }) => {
       );
     }
     if (playerQueue === null) {
-      console.log('return nutl lll');
       return (
         <Button
           colorScheme="green"

@@ -97,12 +97,14 @@ model Secrets {
 }
 
 model WorkerTask {
-  id        Int       @id @unique @default(autoincrement())
-  taken     Boolean   @default(false)
-  data      Json
-  task_name String
-  exp       DateTime?
-  ttl       Int       @default(70)
+  id         Int       @id @unique @default(autoincrement())
+  taken      Boolean   @default(false)
+  data       Json
+  task_name  String
+  not_before DateTime?
+  exp        DateTime?
+  ttl        Int       @default(70)
+  respawn    Int?
 }
 
 model WorkerLocks {

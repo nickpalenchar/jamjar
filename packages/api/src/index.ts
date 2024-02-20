@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import { jam } from "./routers/jam";
 import { health } from "./routers/health";
 import { spotify } from "./routers/spotify";
+import { PrismaClient } from "@prisma/client";
 
 const log = getLogger();
 
@@ -61,6 +62,11 @@ app.use(function fiveHundredHandler(
   res.status(500).send("Something went wrong.");
 });
 
+new PrismaClient().workerTask.findFirst({
+  where: {
+    taken: false,
+  },
+});
 // Start server
 app.listen(1133, function () {
   console.log("Started at http://localhost:1133");
