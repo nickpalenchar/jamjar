@@ -2,6 +2,7 @@ import { PrismaClient, WorkerTask } from "@prisma/client";
 import { getLoggerWithData } from "./logging";
 import { isAfter, add } from "date-fns";
 import os from "node:os";
+import { tasks } from "./tasks";
 
 const prisma = new PrismaClient();
 export class TaskWorker {
@@ -10,6 +11,7 @@ export class TaskWorker {
   #intervalId: NodeJS.Timeout | null;
   #currentTask: WorkerTask | null;
   isPerformingTask: boolean;
+  lockName: string | null;
   #_id: string;
   blocking: boolean; // whether or not to wait until the task completes before trying another
   log: ReturnType<typeof getLoggerWithData>;
@@ -23,6 +25,7 @@ export class TaskWorker {
     this.#_id = `${os.hostname()}:${process.pid}`;
     this.blocking = blocking;
     this.log = getLoggerWithData({ workerId: this.#_id });
+    this.lockName = null;
   }
   get id() {
     return this.#_id;
@@ -73,6 +76,7 @@ export class TaskWorker {
           issued_to: this.id,
         },
       });
+      this.lockName = `workerTask:${task?.id}`;
     } catch (e) {
       const takenLock = await prisma.workerLocks.findUnique({
         where: {
@@ -116,7 +120,9 @@ export class TaskWorker {
         workerId: this.id,
         task: task.id,
       });
+      return;
     }
+
     // got lock
     await prisma.workerTask.update({
       where: { id: task.id },
@@ -137,10 +143,28 @@ export class TaskWorker {
       });
       return;
     }
+    this.log.info('Performing a task', { currentTask: this.#currentTask?.id })
+
     this.isPerformingTask = true;
     try {
+      const handler = tasks[currentTask?.task_name ?? ''];
+      if (!handler) {
+        this.log.error('No handler for task name', { taskName: currentTask?.task_name })
+        throw Error('No handler for task name');
+      }
+      handler(currentTask?.data)
+
     } catch (e) {
+
     } finally {
+      if (this.lockName) {
+        await prisma.workerLocks.delete({
+          where: {
+            key: this.lockName,
+          }
+        })
+      }
+
       this.isPerformingTask = false;
       if (currentTask?.respawn) {
         const taskCopy: Omit<WorkerTask, "id"> = { ...currentTask };
@@ -153,7 +177,7 @@ export class TaskWorker {
             }),
             ttl: currentTask.ttl,
             respawn: currentTask.respawn,
-            data: JSON.stringify(currentTask.data),
+            data: currentTask.data ?? {},
           },
         });
         await prisma.workerTask.update({

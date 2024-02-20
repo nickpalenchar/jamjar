@@ -7,7 +7,7 @@
     "build": "prisma generate",
     "format": "prisma format --schema database/schema.prisma",
     "migrate": "prisma migrate dev",
-    "seed:basicJam": "./scripts/drop-database.sh && npx ts-node seeds/basicJam.ts"
+    "seed:basicJam": "./scripts/drop-database.sh && npx ts-node seeds/basicJam.ts && npx ts-node seeds/taskExpCleanup.ts"
   },
   "keywords": [],
   "author": "",
