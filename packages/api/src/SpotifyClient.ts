@@ -30,10 +30,10 @@ export class SpotifyClient {
     options: RequestInit,
     _isRetry = false,
   ): ReturnType<typeof fetch> {
-    this.#accessToken = await this.#accessToken;
-    this.#refreshToken = await this.#refreshToken;
+    this.#accessToken = (await this.#accessToken) as string;
+    this.#refreshToken = (await this.#refreshToken) as string;
 
-    const res = await fetch(route, {
+    const res = await fetch(`https://api.spotify.com${route}`, {
       ...options,
       headers: {
         ...options.headers,
