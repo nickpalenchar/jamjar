@@ -19,3 +19,6 @@ export const search: Middleware = async (req, res) => {
   const resp = await spotifyClient.search(searchQuery);
   res.status(200).json(resp);
 };
+
+export * from "./authorize";
+export * from "./spotifyProxyApi";

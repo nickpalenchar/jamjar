@@ -16,21 +16,28 @@ import {
   Center,
   Image,
 } from '@chakra-ui/react';
-import { AddIcon, StarIcon } from '@chakra-ui/icons';
+import { AddIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
 import { MiniWorker } from './miniWorker';
+import { AdminTab } from './tabs/AdminTab';
 
 export const Jam: FC<{}> = () => {
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
-  const [tabIndex, setTabIndex] = useState(0);
   const [miniWorker, setMiniWorker] = useState<any>(null);
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
   });
+
+  /* eslint-disable no-restricted-globals */
+  const defaultTabIndex = Number.isNaN(parseInt(location.hash[1]))
+    ? 0
+    : parseInt(location.hash[1]);
+
+  const [tabIndex, setTabIndex] = useState(defaultTabIndex);
 
   useEffect(() => {
     if (!jamData?.id) {
@@ -64,6 +71,8 @@ export const Jam: FC<{}> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jamData?.id]);
 
+  useEffect(() => {});
+
   if (isLoading || loading || !jamData) {
     return <Loading />;
   }
@@ -78,7 +87,6 @@ export const Jam: FC<{}> = () => {
       return <div>Jam is no Longer active</div>;
     }
   }
-  const isUserInJam = user.userInJam?.jamId === jamId;
 
   const onJoin = async () => {
     await fetch(`/api/jam/${jamId}/join`, {
@@ -93,6 +101,10 @@ export const Jam: FC<{}> = () => {
     setSongQueue(updatedQueue);
     setTabIndex(0);
   };
+
+  const isOwner = user?.id === (jamData?.userId ?? Symbol());
+  const isUserInJam = user.userInJam?.jamId === jamId || isOwner;
+
   const vibes = user.userInJam?.vibes ?? 0;
   const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
   return (
@@ -117,16 +129,22 @@ export const Jam: FC<{}> = () => {
         {isUserInJam || <JoinJamModal onJoin={onJoin} />}
 
         <Tabs
-          variant={'soft-rounded'}
           isFitted
           onChange={(index: number) => setTabIndex(index)}
           index={tabIndex}
+          defaultIndex={defaultTabIndex}
         >
           <TabList>
             <Tab>🎙️ Board</Tab>
             <Tab>
-              <AddIcon /> Search
+              <AddIcon margin="4px" /> Search
             </Tab>
+            {isOwner && (
+              <Tab>
+                <SettingsIcon margin="4px" />
+                Admin
+              </Tab>
+            )}
           </TabList>
 
           <TabPanels>
@@ -139,6 +157,13 @@ export const Jam: FC<{}> = () => {
                 setSongQueue={setSongQueue}
                 onNewSong={onNewSong}
               />
+            </TabPanel>
+            <TabPanel>
+              {isOwner && (
+                <TabPanel>
+                  <AdminTab jamId={jamData.id} />
+                </TabPanel>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>

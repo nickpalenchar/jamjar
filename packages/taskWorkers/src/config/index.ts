@@ -1,6 +1,9 @@
 import * as t from "io-ts";
 import path from "path";
 import { readFileSync } from "fs";
+import { getLogger } from "../logging";
+
+const log = getLogger();
 
 const CommonConfig = t.type({
   Env: t.keyof({
@@ -9,26 +12,15 @@ const CommonConfig = t.type({
     PROD: null,
     TEST: null,
   }),
-  votingPrice: t.Int,
-  SPOTIFY_CLIENT_ID: t.string, // from environment variables
-  SPOTIFY_CLIENT_SECRET: t.string, // from environment variables
-  DOMAIN: t.string,
-  SPOTIFY_REDIRECT_URI: t.string,
-  SecretsKey: t.string,
+  DEPENDENCY_API: t.string,
+  ALLOWED_HOSTS: t.array(t.string),
 });
-const DevConfig = t.intersection([
-  CommonConfig,
-  t.type({
-    Env: t.literal("DEV"),
-    rootKey: t.string,
-  }),
-]);
 
-const Config = t.union([CommonConfig, DevConfig]);
+const Config = CommonConfig;
 
 const file = process.env.NODE_ENV
   ? `config.${process.env.NODE_ENV.toLowerCase()}.json`
-  : "config.dev.json";
+  : "config.prod.json";
 
 const filePathFromDist = path.join(__dirname, "..", "config", file);
 const filePathFromSrc = path.join(__dirname, "..", "..", "config", file);
@@ -39,10 +31,6 @@ try {
 } catch (e) {
   fileValues = JSON.parse(readFileSync(filePathFromSrc).toString());
 }
-
-// Add Environment secrets.
-fileValues.SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
-fileValues.SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 
 const validation = Config.decode(fileValues);
 

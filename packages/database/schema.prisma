@@ -21,6 +21,10 @@ model User {
   UserInJam  UserInJam[]
   // exp is only when the user is anon
   exp        DateTime?
+
+  // spotify
+  sec_spotifyAccessToken  String?
+  sec_spotifyRefreshToken String?
 }
 
 model UserInJam {
@@ -76,4 +80,37 @@ model Worker {
   id    String @id @unique @default(cuid())
   jam   Jam    @relation(fields: [jamId], references: [id])
   jamId String
+}
+
+model SpotifyState {
+  id     String   @id @unique @default(uuid())
+  exp    DateTime
+  userId String
+  jamId  String   @default("null") // hack
+}
+
+model Secrets {
+  id             String   @id @unique @default(cuid())
+  exp            DateTime
+  encryptedValue String
+  iv             Bytes
+}
+
+model WorkerTask {
+  id         Int       @id @unique @default(autoincrement())
+  taken      Boolean   @default(false)
+  data       Json
+  task_name  String
+  not_before DateTime?
+  exp        DateTime?
+  ttl        Int       @default(70)
+  respawn    Int?
+}
+
+model WorkerLocks {
+  id        Int       @id @unique @default(autoincrement())
+  key       String    @unique
+  issued_to String
+  // if expired, another can take the lock
+  exp       DateTime?
 }
