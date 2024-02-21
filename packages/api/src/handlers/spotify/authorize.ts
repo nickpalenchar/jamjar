@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import httpErrors from "http-errors";
 import { add } from "date-fns";
 import querystring from "querystring";
-import { config } from "../../config";
+import { config } from "@jamjar/util";
 const prisma = new PrismaClient();
 
 // GET /api/spotify/authorize

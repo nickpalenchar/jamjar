@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Middleware, Context } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { allowedFields } from "../../dbhelper/allowedFields";
-import { getLogger } from "../../logging";
+import { getLogger } from "@jamjar/util";
 const log = getLogger();
 
 const prisma = new PrismaClient();

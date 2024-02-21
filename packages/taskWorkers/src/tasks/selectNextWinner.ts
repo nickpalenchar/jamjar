@@ -2,7 +2,7 @@
 import { PrismaClient } from "@prisma/client";
 import { getLoggerWithData } from "../logging";
 import { isBefore } from "date-fns";
-import { SpotifyClient } from '../../../api/src/spotifyClient';
+import { SpotifyClient } from '@jamjar/util';
 
 const prisma = new PrismaClient();
 

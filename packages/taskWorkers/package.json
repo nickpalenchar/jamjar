@@ -27,6 +27,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@jamjar/spotify": "^1.0.0",
+    "@jamjar/util": "^1.0.0",
     "@prisma/client": "^5.7.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",

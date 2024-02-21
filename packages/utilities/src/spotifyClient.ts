@@ -1,10 +1,11 @@
 import { User } from "@prisma/client";
-import { vault } from "./vault/vault";
+import { Vault } from "./vault";
 import { getLogger, getLoggerWithData } from "./logging";
 import { config } from "./config";
 import path from "node:path";
 
 const log = getLoggerWithData({ class: "SpotifyClient" });
+const vault = new Vault(config.SecretsKey);
 
 export class SpotifyClient {
   #accessToken: Promise<string | null> | string | null;
@@ -18,8 +19,8 @@ export class SpotifyClient {
 
     this.sec_spotifyAccessToken = sec_spotifyAccessToken;
     this.sec_spotifyRefreshToken = sec_spotifyRefreshToken;
-    this.#accessToken = vault.get(sec_spotifyAccessToken);
-    this.#refreshToken = vault.get(sec_spotifyRefreshToken);
+    this.#accessToken = vault.get(sec_spotifyAccessToken ?? undefined);
+    this.#refreshToken = vault.get(sec_spotifyRefreshToken ?? undefined);
   }
 
   async fetch(

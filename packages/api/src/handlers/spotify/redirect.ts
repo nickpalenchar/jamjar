@@ -6,12 +6,12 @@ import { Middleware } from "../../middleware/types";
 import { PrismaClient } from "@prisma/client";
 import { isPast } from "date-fns";
 import httpErrors from "http-errors";
-import { config } from "../../config";
+import { config } from "@jamjar/util";
 // import { vault } from "../../vault/vault";
-import { Vault } from '@jamjar/util';
+import { Vault } from "@jamjar/util";
 
 const prisma = new PrismaClient();
-const vault = new Vault(config.SecretsKey)
+const vault = new Vault(config.SecretsKey);
 
 export const redirect: Middleware = async (req, res, next) => {
   const { state, code } = req.query;

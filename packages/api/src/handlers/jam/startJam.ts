@@ -1,4 +1,4 @@
-import { SpotifyClient } from "../../spotifyClient";
+import { SpotifyClient } from "@jamjar/util";
 import { Context, Middleware } from "../../middleware/types";
 import { spotifyProxyApi } from "../spotify";
 import { PrismaClient } from "@prisma/client";

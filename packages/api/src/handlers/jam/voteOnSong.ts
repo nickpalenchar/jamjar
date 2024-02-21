@@ -2,15 +2,14 @@ import { PrismaClient } from "@prisma/client";
 import { Middleware, Context } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { allowedFields } from "../../dbhelper/allowedFields";
-import { getLogger } from "../../logging";
-import { config } from "../../config";
-const log = getLogger();
+import { config } from "@jamjar/util";
 
 const prisma = new PrismaClient();
 
 // PUT /api/jam/:jamId/queue/:songId/vote
 export const voteOnSong: Middleware = async (req, res, next) => {
   const { context }: { context: Context } = req.body;
+  const { log } = context;
   const { direction = "up" } = req.query;
   const { jamId, songId } = req.params;
 
