@@ -2,6 +2,8 @@ import React, { FC, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ERROR_INACTIVE_JAM, QueueItem, useJamApi } from '../../hooks/useJam';
 import { Loading } from '../../components/Loading';
+import { AiFillControl } from 'react-icons/ai';
+import { FaRegListAlt as FaList } from 'react-icons/fa';
 import { UserContext } from '../../context/Identity';
 import {
   Tabs,
@@ -15,6 +17,7 @@ import {
   Flex,
   Center,
   Image,
+  Icon,
 } from '@chakra-ui/react';
 import { AddIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
@@ -135,19 +138,26 @@ export const Jam: FC<{}> = () => {
           defaultIndex={defaultTabIndex}
         >
           <TabList>
-            <Tab>🎙️ Board</Tab>
-            <Tab>
-              <AddIcon margin="4px" /> Search
-            </Tab>
             {isOwner && (
               <Tab>
-                <SettingsIcon margin="4px" />
-                Admin
+                <Icon as={AiFillControl} boxSize={6} margin="4px" />
+                Controls
               </Tab>
             )}
+            <Tab>
+              <Icon as={FaList} boxSize={5} margin="4px" /> Board
+            </Tab>
+            <Tab>
+              <AddIcon margin="4px" boxSize={5} /> Search
+            </Tab>
           </TabList>
 
           <TabPanels>
+            {isOwner && (
+              <TabPanel>
+                <AdminTab jamId={jamData.id} />
+              </TabPanel>
+            )}
             <TabPanel>
               <JamTab jamData={jamData} setSongQueue={setSongQueue} />
             </TabPanel>
@@ -158,13 +168,7 @@ export const Jam: FC<{}> = () => {
                 onNewSong={onNewSong}
               />
             </TabPanel>
-            <TabPanel>
-              {isOwner && (
-                <TabPanel>
-                  <AdminTab jamId={jamData.id} />
-                </TabPanel>
-              )}
-            </TabPanel>
+            <TabPanel></TabPanel>
           </TabPanels>
         </Tabs>
       </Container>

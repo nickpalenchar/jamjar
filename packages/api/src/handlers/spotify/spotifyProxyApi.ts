@@ -2,7 +2,7 @@ import { Context, Middleware } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { PrismaClient } from "@prisma/client";
 import { getLogger } from "../../logging";
-import { SpotifyClient } from "../../SpotifyClient";
+import { SpotifyClient } from "../../spotifyClient";
 
 const ALLOWED_ROUTES = ["/v1/me/player", "/v1/me/player/queue"];
 

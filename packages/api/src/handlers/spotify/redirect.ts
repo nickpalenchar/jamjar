@@ -72,5 +72,5 @@ export const redirect: Middleware = async (req, res, next) => {
       sec_spotifyRefreshToken,
     },
   });
-  res.redirect(`/jam/${spotifyState.jamId}#2`);
+  res.redirect(`/jam/${spotifyState.jamId}`);
 };

@@ -2,7 +2,7 @@ import winston from "winston";
 
 const log = winston.createLogger({
   level: process.env.LOGLEVEL?.toLowerCase() ?? "info",
-  defaultMeta: { service: "taskWorker" },
+  defaultMeta: { service: "api" },
 });
 
 if (process.env.NODE_ENV !== "production") {
@@ -26,6 +26,9 @@ export function getLoggerWithData(extraData: Record<string, any>) {
     },
     error(message: string, data: object = {}) {
       log.warn(message, { ...data, ...extraData });
+    },
+    debug(message: string, data: object = {}) {
+      log.debug(message, { ...data, ...extraData });
     },
   };
 }
