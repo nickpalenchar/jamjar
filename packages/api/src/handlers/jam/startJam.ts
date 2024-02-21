@@ -62,25 +62,60 @@ export const startJam: Middleware = async (req, res, next) => {
   }
   const spotifyUserId = (await spotifyUserIdReq.json()).id;
 
-  if (playerQueue.queue.length === 0) {
-    const songToPlay = jam.QueueSongs[0];
-    const params = querystring.encode({
-      uri: songToPlay.spotifyUri,
-    });
-    context.log.info("Adding song to queue", { songToPlay: songToPlay.name });
-    const [spotifyAdd] = await Promise.allSettled([
-      spotifyClient.fetch(`/v1/users/queue?${params}`, {
-        method: "post",
-      }),
-      prisma.queueSongs.delete({
-        where: {
-          id: jam.QueueSongs[0].id,
-        },
-      }),
-    ]);
+  /// todo maybe remove this
+  // if (playerQueue.queue.length === 0) {
+  //   const songToPlay = jam.QueueSongs[0];
+  //   const params = querystring.encode({
+  //     uri: songToPlay.spotifyUri,
+  //   });
+  //   context.log.info("Adding song to queue", { songToPlay: songToPlay.name });
+  // }
 
-    console.log("success", { addToQueueStates: spotifyAdd.status });
+  //TODO check if playlist exists
+  if (false) {
+    // todo play the playlist
+    return res.status(201).send("fake playing");
   }
+  // need new playlist first
+  const newPlaylistReq = await spotifyClient.fetch(
+    `/v1/users/${spotifyUserId}/playlists`,
+    {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Jive " + jam.phrase,
+      }),
+    },
+  );
+  if (!newPlaylistReq.ok) {
+    return next(
+      httpErrors.PreconditionFailed(
+        "Could not create playlist. Try re-authenticating spotify",
+      ),
+    );
+  }
+  const { id: playlistId, name: playlistName } = await newPlaylistReq.json();
+  context.log.info("Created new playlist", { playlistId, playlistName });
+  // TODO save id on Jam
+  console.log("success", { addToQueueStates: newPlaylistReq.status });
+
+  const trackAddRequest = await spotifyClient.fetch(
+    `/v1/playlists/${playlistId}/tracks`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uris: [jam.QueueSongs[0].spotifyUri],
+      }),
+    },
+  );
+  context.log.info("Added first track to playlist");
+
+  return res.status(206).json({ data: { playlist: playlistName } });
+
   const playSpotify = await spotifyClient.fetch("/v1/me/player/play", {
     method: "put",
   });
