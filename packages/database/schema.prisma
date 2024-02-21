@@ -68,6 +68,8 @@ model QueueSongs {
   jam       Jam    @relation(fields: [jamId], references: [id])
   jamId     String
 
+  isNext Boolean @default(false)
+
   // info that can be displaed in the queue
   rank          Int     @default(5)
   name          String

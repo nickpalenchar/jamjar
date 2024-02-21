@@ -38,19 +38,6 @@ export const startJam: Middleware = async (req, res, next) => {
   console.info("pre-checks for jam successful.");
   const spotifyClient = new SpotifyClient(req.body.context.principal.user);
 
-  const playerQueue = await (
-    await spotifyClient.fetch("/v1/me/player/queue", {})
-  ).json();
-
-  context.log.info("Current player queue", {
-    currentlyPlaying: !!playerQueue.currently_playing,
-    queueLength: playerQueue.queue.length,
-  });
-  if (playerQueue.queue.length > 1) {
-    return next(
-      httpErrors.PreconditionFailed("Player Spotify queue must be cleared."),
-    );
-  }
   context.log.info("getting the user");
   const spotifyUserIdReq = await spotifyClient.fetch("/v1/me", {});
   if (!spotifyUserIdReq.ok) {
@@ -75,8 +62,33 @@ export const startJam: Middleware = async (req, res, next) => {
   if (jam.spotifyPlaylistId) {
     // todo play the playlist
     // check if its playing
-    const playback;
-    return res.status(201).send({ message: "fake playing" });
+    const playbackReq = await spotifyClient.fetch("/v1/me/player", {});
+    console.log(">>> status >>1, ", playbackReq.status);
+    if (playbackReq.status === 204) {
+      return next(
+        httpErrors.PreconditionFailed(
+          "You're close... but you need to start the playlist yourself.",
+        ),
+      );
+    }
+    const data = await playbackReq.json();
+    if (!data.is_playing) {
+      return next(
+        httpErrors.PreconditionFailed(
+          "You're close... but you need to start the playlist yourself.",
+        ),
+      );
+    }
+    /** SelectNextWinner playlistUri, jamId */
+    await prisma.workerTask.create({
+      data: {
+        task_name: "select_next_winner",
+        data: {
+          jamId,
+        },
+      },
+    });
+    return res.status(201).send(data);
   }
   // need new playlist first
   const newPlaylistReq = await spotifyClient.fetch(
