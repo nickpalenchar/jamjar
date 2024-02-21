@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import httpErrors from "http-errors";
 import { add } from "date-fns";
 import querystring from "querystring";
-import { config } from "../../config";
+import { config } from "@jamjar/util";
 const prisma = new PrismaClient();
 
 // GET /api/spotify/authorize
@@ -16,6 +16,7 @@ export const authorize: Middleware = async (req, res, next) => {
   if (!req.body.context.principal.user) {
     return next(httpErrors.Unauthorized());
   }
+  console.log("hello");
   const state = await prisma.spotifyState.create({
     data: {
       exp: add(new Date(), { minutes: 10 }),
@@ -29,9 +30,11 @@ export const authorize: Middleware = async (req, res, next) => {
       querystring.stringify({
         response_type: "code",
         client_id: config.SPOTIFY_CLIENT_ID,
-        scope: ["user-read-playback-state", "user-modify-playback-state"].join(
-          " ",
-        ),
+        scope: [
+          "user-read-playback-state",
+          "user-modify-playback-state",
+          "playlist-modify-public",
+        ].join(" "),
         state: state.id,
         redirect_uri: config.SPOTIFY_REDIRECT_URI,
       }),

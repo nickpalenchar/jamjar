@@ -1,6 +1,6 @@
 import { Middleware, Context } from "./types";
 import { PrismaClient } from "@prisma/client";
-import { getLogger } from "../logging";
+import { getLogger, getLoggerWithData } from "@jamjar/util";
 const prisma = new PrismaClient();
 
 const getUserFromUserContext = async (
@@ -20,10 +20,13 @@ const getUserFromUserContext = async (
 
 export const createContext: Middleware = async (req, res, next) => {
   const sessionId = req.headers["user-context"]?.toString();
+  const user = await getUserFromUserContext(sessionId);
+  const loggingData = { route: req.route, userId: user?.id ?? null };
+
   const context: Context = {
-    log: getLogger(),
+    log: getLoggerWithData(loggingData) as Context["log"],
     principal: {
-      user: await getUserFromUserContext(sessionId),
+      user,
     },
   };
   req.body.context = context;

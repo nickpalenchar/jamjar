@@ -52,6 +52,7 @@ model Jam {
   userId              String
   spotify             Json
   exp                 DateTime
+  spotifyPlaylistId   String?
   QueueSongs          QueueSongs[]
   Worker              Worker[]
   UserInJam           UserInJam[]
@@ -66,6 +67,8 @@ model QueueSongs {
   userId    String
   jam       Jam    @relation(fields: [jamId], references: [id])
   jamId     String
+
+  isNext Boolean @default(false)
 
   // info that can be displaed in the queue
   rank          Int     @default(5)

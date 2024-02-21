@@ -5,3 +5,4 @@ export * from "./getJamByPhrase";
 export * from "./voteOnSong";
 export * from "./joinJam";
 export * from "./refreshOwnVibes";
+export * from './startJam';

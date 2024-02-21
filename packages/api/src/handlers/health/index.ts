@@ -1,4 +1,4 @@
-import { config } from "../../config";
+import { config } from "@jamjar/util";
 import { Middleware, Context } from "../../middleware/types";
 import { SpotifyClient } from "@jamjar/spotify";
 

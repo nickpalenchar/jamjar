@@ -7,6 +7,7 @@ import {
   joinJam,
   getJamByPhrase,
   getJam,
+  startJam
 } from "../handlers/jam";
 
 export const jam = Router();
@@ -14,6 +15,7 @@ export const jam = Router();
 jam.get("/phrase/:phrase", getJamByPhrase);
 jam.get("/:jamId", getJam);
 jam.post("/:jamId/refreshOwnVibes", refreshOwnVibes);
+jam.post('/:jamId/start', startJam)
 
 jam.post("/", newJam);
 jam.post("/:jamId/join", joinJam);

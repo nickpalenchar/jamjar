@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { config } from "../config";
+import { config } from "@jamjar/util";
 
 interface FieldSpec {
   // allowed literal fields

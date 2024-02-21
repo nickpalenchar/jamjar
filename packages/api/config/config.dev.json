@@ -1,7 +1,0 @@
-{
-  "Env": "DEV",
-  "SecretsKey": "jivemyhive1234567890",
-  "votingPrice": 1,
-  "DOMAIN": "http://localhost:3000",
-  "SPOTIFY_REDIRECT_URI": "http://localhost:3000/api/spotify/redirect"
-}

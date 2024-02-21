@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import express, { NextFunction, type Request, type Response } from "express";
-import { getLogger } from "./logging";
+import { getLogger } from "@jamjar/util";
 import httpErrors from "http-errors";
 import { createContext } from "./middleware/createContext";
 import bodyParser from "body-parser";

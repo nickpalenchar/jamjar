@@ -6,10 +6,12 @@ import { Middleware } from "../../middleware/types";
 import { PrismaClient } from "@prisma/client";
 import { isPast } from "date-fns";
 import httpErrors from "http-errors";
-import { config } from "../../config";
-import { vault } from "../../vault/vault";
+import { config } from "@jamjar/util";
+// import { vault } from "../../vault/vault";
+import { Vault } from "@jamjar/util";
 
 const prisma = new PrismaClient();
+const vault = new Vault(config.SecretsKey);
 
 export const redirect: Middleware = async (req, res, next) => {
   const { state, code } = req.query;
@@ -63,7 +65,6 @@ export const redirect: Middleware = async (req, res, next) => {
   const { access_token, refresh_token } = spotifyBody;
   const sec_spotifyAccessToken = await vault.save(access_token, {});
   const sec_spotifyRefreshToken = await vault.save(refresh_token, {});
-  console.log("SUCCESS", { access_token, refresh_token });
   await prisma.user.update({
     where: {
       id: spotifyState.userId,
@@ -73,5 +74,5 @@ export const redirect: Middleware = async (req, res, next) => {
       sec_spotifyRefreshToken,
     },
   });
-  res.redirect(`/jam/${spotifyState.jamId}#2`);
+  res.redirect(`/jam/${spotifyState.jamId}`);
 };
