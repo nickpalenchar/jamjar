@@ -52,6 +52,7 @@ model Jam {
   userId              String
   spotify             Json
   exp                 DateTime
+  spotifyPlaylistId   String?
   QueueSongs          QueueSongs[]
   Worker              Worker[]
   UserInJam           UserInJam[]

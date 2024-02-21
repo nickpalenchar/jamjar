@@ -72,9 +72,11 @@ export const startJam: Middleware = async (req, res, next) => {
   // }
 
   //TODO check if playlist exists
-  if (false) {
+  if (jam.spotifyPlaylistId) {
     // todo play the playlist
-    return res.status(201).send("fake playing");
+    // check if its playing
+    const playback;
+    return res.status(201).send({ message: "fake playing" });
   }
   // need new playlist first
   const newPlaylistReq = await spotifyClient.fetch(
@@ -101,9 +103,19 @@ export const startJam: Middleware = async (req, res, next) => {
   // TODO save id on Jam
   console.log("success", { addToQueueStates: newPlaylistReq.status });
 
+  await prisma.jam.update({
+    where: {
+      id: jam.id,
+    },
+    data: {
+      spotifyPlaylistId: playlistId,
+    },
+  });
+
   const trackAddRequest = await spotifyClient.fetch(
     `/v1/playlists/${playlistId}/tracks`,
     {
+      method: "post",
       headers: {
         "Content-Type": "application/json",
       },
