@@ -8,7 +8,7 @@ import { isPast } from "date-fns";
 import httpErrors from "http-errors";
 import { config } from "../../config";
 // import { vault } from "../../vault/vault";
-import { Vault } from '@jamjar/vault';
+import { Vault } from '@jamjar/util';
 
 const prisma = new PrismaClient();
 const vault = new Vault(config.SecretsKey)

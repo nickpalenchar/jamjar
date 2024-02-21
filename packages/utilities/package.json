@@ -1,5 +1,5 @@
 {
-  "name": "@jamjar/vault",
+  "name": "@jamjar/util",
   "version": "1.0.0",
   "description": "Store and retrieve sensitive db info",
   "main": "dist/index.js",

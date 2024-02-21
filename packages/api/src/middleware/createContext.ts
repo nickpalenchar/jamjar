@@ -1,6 +1,6 @@
 import { Middleware, Context } from "./types";
 import { PrismaClient } from "@prisma/client";
-import { getLogger, getLoggerWithData } from "../logging";
+import { getLogger, getLoggerWithData } from "@jamjar/util";
 const prisma = new PrismaClient();
 
 const getUserFromUserContext = async (
