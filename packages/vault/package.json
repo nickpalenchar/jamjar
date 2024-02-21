@@ -1,0 +1,30 @@
+{
+  "name": "@jamjar/vault",
+  "version": "1.0.0",
+  "description": "Store and retrieve sensitive db info",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "./dist/index.js",
+    "start:watch": "onchange -d 300 -i -k \"./dist/**/*\" -- node ./dist/index.js",
+    "dev": "concurrently npm:build:watch npm:prettier:watch npm:start:watch",
+    "build": "tsup src/index.ts --dts",
+    "build:watch": "tsup src/index.ts --tsconfig=tsconfig.json",
+    "prettier:watch": "onchange -id 10000 \"**/*.ts\" -- prettier --write --ignore-unknown {{changed}}"
+  },
+  "type": "commonjs",
+  "keywords": [],
+  "author": "Nick Palenchar <nickpal@nickpalenchar.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "onchange": "^7.1.0",
+    "prettier": "3.1.1",
+    "tsup": "^8.0.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.2",
+    "date-fns": "^3.3.1",
+    "winston": "^3.11.0"
+  }
+}
