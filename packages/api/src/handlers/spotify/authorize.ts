@@ -16,6 +16,7 @@ export const authorize: Middleware = async (req, res, next) => {
   if (!req.body.context.principal.user) {
     return next(httpErrors.Unauthorized());
   }
+  console.log('hello')
   const state = await prisma.spotifyState.create({
     data: {
       exp: add(new Date(), { minutes: 10 }),

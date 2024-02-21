@@ -1,4 +1,4 @@
-import { Middleware } from "../../middleware/types";
+import { Context, Middleware } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { PrismaClient } from "@prisma/client";
 import { getLogger } from "../../logging";
@@ -12,33 +12,16 @@ const prisma = new PrismaClient();
 
 export const spotifyProxyApi: Middleware = async (req, res, next) => {
   const spotifyRoute = req.path.replace("/api/spotify/proxy-api", "");
+  const { context }: { context: Context } = req.body;
   if (!ALLOWED_ROUTES.includes(spotifyRoute)) {
+    context.log.error("Spotify route not allowed");
     return next(httpErrors.PreconditionFailed());
   }
 
   const spotifyClinet = new SpotifyClient(req.body.context.principal.user);
 
-  const requestUri = `https://api.spotify.com${spotifyRoute}`;
+  // const requestUri = `https://api.spotify.com${spotifyRoute}`;
 
-  const sRes = await spotifyClinet.fetch(requestUri, { method: req.method });
+  const sRes = await spotifyClinet.fetch(spotifyRoute, { method: req.method });
   res.status(sRes.status).send(sRes.body);
-
-  // log.info("Making spotify proxy request", { requestUri });
-  // let spotifyRes;
-  // try {
-  //   spotifyRes = await spotifyRequest(
-  //     context,
-  //     requestUri,
-  //     req.method as "get" | "post" | "put",
-  //   );
-  // } catch (e) {
-  //   return next(httpErrors.Unauthorized());
-  // }
-
-  // if (!spotifyRes.ok) {
-  //   log.error("Bad response from spotify proxy", {
-  //     statusCode: spotifyRes.status,
-  //     body: spotifyRes.statusText,
-  //   });
-  // }
 };

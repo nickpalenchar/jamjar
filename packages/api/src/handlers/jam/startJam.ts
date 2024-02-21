@@ -60,6 +60,7 @@ export const startJam: Middleware = async (req, res, next) => {
     ]);
   }
   await spotifyClient.fetch("/v1/me/player/play", { method: "put" });
+  return res.status(201).send();
 };
 
 /**

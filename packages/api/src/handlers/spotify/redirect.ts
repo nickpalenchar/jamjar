@@ -63,7 +63,6 @@ export const redirect: Middleware = async (req, res, next) => {
   const { access_token, refresh_token } = spotifyBody;
   const sec_spotifyAccessToken = await vault.save(access_token, {});
   const sec_spotifyRefreshToken = await vault.save(refresh_token, {});
-  console.log("SUCCESS", { access_token, refresh_token });
   await prisma.user.update({
     where: {
       id: spotifyState.userId,
