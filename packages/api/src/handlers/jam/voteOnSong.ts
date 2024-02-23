@@ -52,6 +52,7 @@ export const voteOnSong: Middleware = async (req, res, next) => {
       where: {
         jamId,
         id: songId,
+        isNext: false,
       },
       data: {
         rank: action,
@@ -64,7 +65,7 @@ export const voteOnSong: Middleware = async (req, res, next) => {
       userId: userInJam.userId,
       error: e,
     });
-    return res.status(500).send("Error updating song vote");
+    return res.status(400).send("Error updating song vote");
   }
 
   if (!updatedQueueSong) {

@@ -40,11 +40,11 @@ export class SpotifyClient {
         Authorization: `Bearer ${this.#accessToken}`,
       },
     });
-    log.info("Response from spotify", { statusCode: res.status });
-    if (
-      res.status === 401 &&
-      (await res.json())?.message === "The access token expired"
-    ) {
+    log.info("Response from spotify", {
+      statusCode: res.status,
+      condition: res.status === 401,
+    });
+    if (res.status === 401) {
       log.info("Refreshing the user token for spotify");
       if (_isRetry) {
         throw Error("Unauthorized - cannot refresh");
@@ -52,13 +52,16 @@ export class SpotifyClient {
       await this.refreshCredentials();
       return this.fetch(route, options, true);
     }
+
     return res;
   }
   async refreshCredentials() {
     if (!this.#refreshToken) {
       throw new Error("Need refresh but no token provided.");
     }
-    log.info("Requesting refresh token grant from spotify");
+    log.info("Requesting refresh token grant from spotify", {
+      refreshToken: (await this.#refreshToken) ?? "NONE",
+    });
 
     const refreshRes = await fetch("https://accounts.spotify.com/api/token", {
       headers: {

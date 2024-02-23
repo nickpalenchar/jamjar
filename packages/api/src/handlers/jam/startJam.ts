@@ -1,9 +1,8 @@
 import { SpotifyClient } from "@jamjar/util";
 import { Context, Middleware } from "../../middleware/types";
-import { spotifyProxyApi } from "../spotify";
 import { PrismaClient } from "@prisma/client";
 import httpErrors from "http-errors";
-import querystring from "node:querystring";
+import { add } from "date-fns";
 const prisma = new PrismaClient();
 
 /** POST /api/jam/:jamId/start */
@@ -49,47 +48,17 @@ export const startJam: Middleware = async (req, res, next) => {
   }
   const spotifyUserId = (await spotifyUserIdReq.json()).id;
 
-  /// todo maybe remove this
-  // if (playerQueue.queue.length === 0) {
-  //   const songToPlay = jam.QueueSongs[0];
-  //   const params = querystring.encode({
-  //     uri: songToPlay.spotifyUri,
-  //   });
-  //   context.log.info("Adding song to queue", { songToPlay: songToPlay.name });
-  // }
-
   //TODO check if playlist exists
-  if (jam.spotifyPlaylistId) {
-    // todo play the playlist
-    // check if its playing
-    const playbackReq = await spotifyClient.fetch("/v1/me/player", {});
-    console.log(">>> status >>1, ", playbackReq.status);
-    if (playbackReq.status === 204) {
-      return next(
-        httpErrors.PreconditionFailed(
-          "You're close... but you need to start the playlist yourself.",
-        ),
-      );
-    }
-    const data = await playbackReq.json();
-    if (!data.is_playing) {
-      return next(
-        httpErrors.PreconditionFailed(
-          "You're close... but you need to start the playlist yourself.",
-        ),
-      );
-    }
-    /** SelectNextWinner playlistUri, jamId */
-    await prisma.workerTask.create({
+  await prisma.workerTask.create({
+    data: {
+      task_name: "play_next_song_from_queue",
       data: {
-        task_name: "select_next_winner",
-        data: {
-          jamId,
-        },
+        jamId,
       },
-    });
-    return res.status(201).send(data);
-  }
+    },
+  });
+  return res.status(201).send("Jam started!");
+
   // need new playlist first
   const newPlaylistReq = await spotifyClient.fetch(
     `/v1/users/${spotifyUserId}/playlists`,
