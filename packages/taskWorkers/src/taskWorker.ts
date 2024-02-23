@@ -5,6 +5,7 @@ import os from "node:os";
 import { tasks } from "./tasks";
 
 const prisma = new PrismaClient();
+
 export class TaskWorker {
   interval: number;
   isStarted: boolean;
@@ -60,7 +61,21 @@ export class TaskWorker {
     const now = new Date();
     const task = await prisma.workerTask
       .findFirst({
-        where: { taken: false },
+        where: {
+          OR: [
+            {
+              taken: false,
+              not_before: { lt: now },
+            },
+            {
+              taken: false,
+              not_before: null,
+            },
+          ],
+        },
+        orderBy: {
+          id: "asc",
+        },
       })
       .catch((e) => console.log("ERRRROORR", e));
     if (!task) {
@@ -143,26 +158,37 @@ export class TaskWorker {
       });
       return;
     }
-    this.log.info('Performing a task', { currentTask: this.#currentTask?.id })
+    this.log.info("Performing a task!!!", {
+      currentTask: this.#currentTask?.id,
+      taskName: this.#currentTask?.task_name,
+    });
 
     this.isPerformingTask = true;
     try {
-      const handler = tasks[currentTask?.task_name ?? ''];
+      const handler = tasks[currentTask?.task_name ?? ""];
+      console.log({ handler });
       if (!handler) {
-        this.log.error('No handler for task name', { taskName: currentTask?.task_name })
-        throw Error('No handler for task name');
+        this.log.error("No handler for task name", {
+          taskName: currentTask?.task_name,
+        });
+        throw Error("No handler for task name");
       }
-      handler(currentTask?.data)
-
+      await handler(currentTask?.data);
+      this.log.info("Completed task successfully", { currentTask });
+      await prisma.workerTask.delete({
+        where: {
+          id: currentTask?.id,
+        },
+      });
     } catch (e) {
-
+      console.error({ error: e });
     } finally {
       if (this.lockName) {
         await prisma.workerLocks.delete({
           where: {
             key: this.lockName,
-          }
-        })
+          },
+        });
       }
 
       this.isPerformingTask = false;
@@ -180,9 +206,8 @@ export class TaskWorker {
             data: currentTask.data ?? {},
           },
         });
-        await prisma.workerTask.update({
+        await prisma.workerTask.delete({
           where: { id: currentTask.id },
-          data: {},
         });
       }
     }
