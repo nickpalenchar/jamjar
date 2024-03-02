@@ -19,7 +19,7 @@ import {
   Image,
   Icon,
 } from '@chakra-ui/react';
-import { AddIcon, SettingsIcon, StarIcon } from '@chakra-ui/icons';
+import { AddIcon, StarIcon } from '@chakra-ui/icons';
 import { SearchTab } from './tabs/SearchTab';
 import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
@@ -29,7 +29,7 @@ import { AdminTab } from './tabs/AdminTab';
 export const Jam: FC<{}> = () => {
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
-  const [miniWorker, setMiniWorker] = useState<any>(null);
+  const [_, setMiniWorker] = useState<any>(null);
 
   const [{ jamData, isLoading, error: jamError }, setSongQueue] = useJamApi({
     jamId,
