@@ -24,8 +24,12 @@ export const SelectAJam: FC<{}> = () => {
 
   const handleClick = async () => {
     setIsLoading(true);
-    const word1 = firstInput.current?.value.replace(/[\s-.,;]/g, '');
-    const word2 = secondInput.current?.value.replace(/[\s-.,;]/g, '');
+    const word1 = firstInput.current?.value
+      .replace(/[\s-.,;]/g, '')
+      .toLowerCase();
+    const word2 = secondInput.current?.value
+      .replace(/[\s-.,;]/g, '')
+      .toLowerCase();
     console.log([word1, word2]);
     const res = await fetch(`/api/jam/phrase/${word1}-${word2}`);
     if (!res.ok) {

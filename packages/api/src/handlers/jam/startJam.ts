@@ -2,7 +2,6 @@ import { SpotifyClient } from "@jamjar/util";
 import { Context, Middleware } from "../../middleware/types";
 import { PrismaClient } from "@prisma/client";
 import httpErrors from "http-errors";
-import { add } from "date-fns";
 const prisma = new PrismaClient();
 
 /** POST /api/jam/:jamId/start */

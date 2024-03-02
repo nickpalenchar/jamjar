@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import { Vault } from "./vault";
-import { getLogger, getLoggerWithData } from "./logging";
+import { getLoggerWithData } from "./logging";
 import { config } from "./config";
 import path from "node:path";
 
@@ -57,7 +57,14 @@ export class SpotifyClient {
   }
   async refreshCredentials() {
     if (!this.#refreshToken) {
-      throw new Error("Need refresh but no token provided.");
+      return {
+        ok: false,
+        statusCode: 403,
+        async json() {
+          return { message: "Need refresh but no token provided" };
+        },
+      };
+      // throw new Error("Need refresh but no token provided.");
     }
     log.info("Requesting refresh token grant from spotify", {
       refreshToken: (await this.#refreshToken) ?? "NONE",
