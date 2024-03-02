@@ -166,7 +166,6 @@ export class TaskWorker {
     this.isPerformingTask = true;
     try {
       const handler = tasks[currentTask?.task_name ?? ""];
-      console.log({ handler });
       if (!handler) {
         this.log.error("No handler for task name", {
           taskName: currentTask?.task_name,
@@ -175,11 +174,15 @@ export class TaskWorker {
       }
       await handler(currentTask?.data);
       this.log.info("Completed task successfully", { currentTask });
-      await prisma.workerTask.delete({
-        where: {
-          id: currentTask?.id,
-        },
-      });
+      // only delete the task if its not a respawn. If it is, the
+      // delete logic will happen further down.
+      if (!currentTask?.respawn) {
+        await prisma.workerTask.delete({
+          where: {
+            id: currentTask?.id,
+          },
+        });
+      }
     } catch (e) {
       console.error({ error: e });
     } finally {
