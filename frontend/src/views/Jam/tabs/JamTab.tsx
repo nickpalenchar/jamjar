@@ -85,14 +85,22 @@ export const JamTab: FC<{
         variant="outline"
         padding="0.8em"
         margin="0.2em"
-        background="pink.200"
+        background=""
         className={'___jivebanner'}
+        borderColor={'pink.400'}
+        borderWidth={'2px'}
       >
         <Flex>
           <VStack paddingRight={'0.8em'}>
-            <VoteButton icon={<ChevronUpIcon boxSize={6} />} onClick={null} />
-            <div> </div>
-            <VoteButton icon={<ChevronDownIcon boxSize={6} />} onClick={null} />
+            <VoteButton
+              icon={<ChevronUpIcon boxSize={6} color="gray.200" />}
+              onClick={null}
+            />
+            <div>10</div>
+            <VoteButton
+              icon={<ChevronDownIcon boxSize={6} color="gray.200" />}
+              onClick={null}
+            />
           </VStack>
           <div>
             <SongCard
