@@ -101,7 +101,7 @@ export const JamTab: FC<{
                 icon={<ChevronUpIcon boxSize={6} color="gray.200" />}
                 onClick={null}
               />
-              <div>10</div>
+              <div>{jamData.nowPlaying.rank}</div>
               <VoteButton
                 icon={<ChevronDownIcon boxSize={6} color="gray.200" />}
                 onClick={null}
@@ -109,7 +109,7 @@ export const JamTab: FC<{
             </VStack>
             <div>
               <SongCard
-                albumCoverUrl={jamData.nowPlaying.albumImageUrl}
+                albumCoverUrl={jamData.nowPlaying.imageUrl}
                 id={jamData.nowPlaying.id}
                 name={jamData.nowPlaying.name}
                 artist={jamData.nowPlaying.artist}
