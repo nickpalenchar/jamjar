@@ -47,7 +47,8 @@ export class SpotifyClient {
     if (res.status === 401) {
       log.info("Refreshing the user token for spotify");
       if (_isRetry) {
-        throw Error("Unauthorized - cannot refresh");
+        log.error("Unauthorized - cannot refresh");
+        return res;
       }
       await this.refreshCredentials();
       return this.fetch(route, options, true);

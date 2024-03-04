@@ -6,14 +6,15 @@ import { JamData, SetSongQueueParams } from '../../../hooks/useJam';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { UserContext } from '../../../context/Identity';
 import { Loading } from '../../../components/Loading';
+import './banner.css';
 
 interface VoteButtonParams {
-  onClick: MouseEventHandler;
+  onClick: MouseEventHandler | null;
   icon: ReactNode;
 }
 
 const VoteButton: FC<VoteButtonParams> = ({ onClick, icon }) => (
-  <div style={{ cursor: 'pointer' }} onClick={onClick}>
+  <div style={{ cursor: 'pointer' }} onClick={onClick ?? (() => {})}>
     {icon}
   </div>
 );
@@ -65,8 +66,45 @@ export const JamTab: FC<{
     }
   };
 
+  const bannerStyle = {
+    '::before': {
+      content: 'Now Playing',
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      backgroundColor: '#4CAF50', // Choose your banner background color
+      color: '#fff', // Choose your banner text color
+      padding: '5px 10px', // Adjust padding as needed
+      borderBottomLeftRadius: '5px', // Optional: Add some border-radius for styling
+    },
+  };
+
   return (
     <>
+      <Card
+        variant="outline"
+        padding="0.8em"
+        margin="0.2em"
+        background="pink.200"
+        className={'___jivebanner'}
+      >
+        <Flex>
+          <VStack paddingRight={'0.8em'}>
+            <VoteButton icon={<ChevronUpIcon boxSize={6} />} onClick={null} />
+            <div> </div>
+            <VoteButton icon={<ChevronDownIcon boxSize={6} />} onClick={null} />
+          </VStack>
+          <div>
+            <SongCard
+              albumCoverUrl="https://i.scdn.co/image/ab67616d0000b2732ab64fd86c12f2ba7df9c446"
+              id={'1Jbwq1BswM8apm7pjRZKq8'}
+              name={'Hello'}
+              artist={'adele'}
+              spotifyUri={'hi'}
+            />
+          </div>
+        </Flex>
+      </Card>
       {jamData.queue.map((song, i: number) => {
         return (
           <Card variant="outline" padding="0.8em" margin="0.2em" key={song.id}>
