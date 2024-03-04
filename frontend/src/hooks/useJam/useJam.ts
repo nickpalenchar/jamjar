@@ -56,7 +56,7 @@ export const useJamApi = ({
             return false;
           }
           return true;
-        })
+        });
         for (const queueSong of data.queue) {
           if (queueSong.nowPlaying) {
             data.nowPlaying = queueSong;
