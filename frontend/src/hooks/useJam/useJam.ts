@@ -48,11 +48,15 @@ export const useJamApi = ({
             setIsLoading(false);
             setJamData(null);
           }
-          // setIsLoading(false);
-          // setError(response.)
-          // throw new Error(`Error fetching data for ID ${jamId}`);
         }
         const data: JamData = await response.json();
+        data.queue = data.queue.filter((queueSong) => {
+          if (queueSong.nowPlaying) {
+            data.nowPlaying = queueSong;
+            return false;
+          }
+          return true;
+        })
         for (const queueSong of data.queue) {
           if (queueSong.nowPlaying) {
             data.nowPlaying = queueSong;
