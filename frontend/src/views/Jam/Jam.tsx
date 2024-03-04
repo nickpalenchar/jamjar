@@ -102,7 +102,7 @@ export const Jam: FC<{}> = () => {
       a.rank > b.rank ? 1 : -1,
     );
     setSongQueue(updatedQueue);
-    setTabIndex(0);
+    setTabIndex(isOwner ? 1 : 0);
   };
 
   const isOwner = user?.id === (jamData?.userId ?? Symbol());

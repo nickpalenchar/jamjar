@@ -77,6 +77,7 @@ model QueueSongs {
   imageUrl      String?
   spotifyUri    String?
   albumCoverUrl String?
+  nowPlaying    Boolean @default(false)
 }
 
 model Worker {

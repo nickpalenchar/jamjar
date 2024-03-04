@@ -5,6 +5,7 @@ export interface JamData {
   id: string;
   phrase: string;
   queue: Array<QueueItem>;
+  nowPlaying: QueueItem | null;
   userId: string; // owner
 }
 export interface QueueItem {
@@ -15,6 +16,7 @@ export interface QueueItem {
   rank: number;
   uri: string;
   albumImageUrl: string;
+  nowPlaying: boolean;
 }
 
 export type SetSongQueueParams = QueueItem[];
@@ -50,8 +52,13 @@ export const useJamApi = ({
           // setError(response.)
           // throw new Error(`Error fetching data for ID ${jamId}`);
         }
-
         const data: JamData = await response.json();
+        for (const queueSong of data.queue) {
+          if (queueSong.nowPlaying) {
+            data.nowPlaying = queueSong;
+            break;
+          }
+        }
         setJamData(data);
       } catch (error) {
         setError(error as string);
