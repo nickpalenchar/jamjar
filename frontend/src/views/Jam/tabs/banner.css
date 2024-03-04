@@ -1,12 +1,14 @@
 .___jivebanner {
   position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
   overflow: hidden;
 
   /* Additional styles for your card */
 
   /* Styling for the banner */
   &::before {
-    content: 'Now playing';
+    content: "Now playing";
     text-align: center;
     position: absolute;
     top: 25px;
