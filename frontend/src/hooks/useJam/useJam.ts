@@ -54,6 +54,13 @@ export const useJamApi = ({
           }
         }
         const data: JamData = await response.json();
+        data.queue = data.queue.filter((queueSong) => {
+          if (queueSong.nowPlaying) {
+            data.nowPlaying = queueSong;
+            return false;
+          }
+          return true;
+        })
         for (const queueSong of data.queue) {
           if (queueSong.nowPlaying) {
             data.nowPlaying = queueSong;
