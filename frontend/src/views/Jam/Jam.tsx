@@ -30,7 +30,6 @@ import { socket } from '../../socket';
 export const Jam: FC<{}> = () => {
   // socket.io
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState<any[]>([]);
 
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
@@ -90,13 +89,14 @@ export const Jam: FC<{}> = () => {
     }
 
     function onFooEvent(value: any) {
-      console.log('got foo event!');
-      setFooEvents((previous: any) => [...previous, value]);
+      console.log('got foo event!', value);
+      setSongQueue([...value.data.updatedQueue]);
+      // setFooEvents((previous: any) => [...previous, value]);
     }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('foo', onFooEvent);
+    socket.on('put:songQueue', onFooEvent);
     socket.connect();
     return () => {
       socket.off('connect', onConnect);
