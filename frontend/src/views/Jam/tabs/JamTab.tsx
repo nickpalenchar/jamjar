@@ -123,7 +123,7 @@ export const JamTab: FC<{
       )}
       {jamData.queue.map((song, i: number) => {
         return (
-          <Card variant="outline" padding="0.8em" margin="0.2em" key={song.id}>
+          <Card variant="outline" padding="0.8em" margin="0.2em" key={i}>
             <Flex>
               <VStack paddingRight={'0.8em'}>
                 <VoteButton

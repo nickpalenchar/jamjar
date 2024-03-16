@@ -33,7 +33,7 @@ interface UseJamApiResult {
 
 export const useJamApi = ({
   jamId,
-}: UseJamApiProps): [UseJamApiResult, (queueItems: QueueItem[]) => void] => {
+}: UseJamApiProps): [UseJamApiResult, (queueItems: QueueItem[]) => void, CallableFunction] => {
   const [jamData, setJamData] = useState<JamData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,5 +77,5 @@ export const useJamApi = ({
   const setQueueSongs = (queueSongs: QueueItem[]) =>
     jamData && setJamData({ ...jamData, queue: queueSongs });
 
-  return [{ jamData, isLoading, error }, setQueueSongs];
+  return [{ jamData, isLoading, error }, setQueueSongs, setJamData];
 };

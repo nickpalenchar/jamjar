@@ -3,6 +3,7 @@ import { Middleware, Context } from "../../middleware/types";
 import httpErrors from "http-errors";
 import { allowedFields } from "../../dbhelper/allowedFields";
 import { config } from "@jamjar/util";
+import { getSocket } from "../../websocket";
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,7 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   const { log } = context;
   const { direction = "up" } = req.query;
   const { jamId, songId } = req.params;
+  const socketPromise = getSocket();
 
   if (!context.principal.user) {
     return next(httpErrors.Unauthorized());
@@ -102,6 +104,13 @@ export const voteOnSong: Middleware = async (req, res, next) => {
   const standings = updatedJam.QueueSongs.sort((a, b) =>
     a.rank > b.rank ? -1 : 1,
   ).map((q) => allowedFields("queueSongs", q));
+
+  const socket = await socketPromise;
+
+  log.info("Broadcasting put:songQueue to room", { updatedQueue: standings });
+  socket
+    .to(`/jam/${jamId}`)
+    .emit("put:songQueue", { data: { updatedQueue: standings } });
 
   res.status(200).send({
     userVibes: userInJam.vibes - 1,
