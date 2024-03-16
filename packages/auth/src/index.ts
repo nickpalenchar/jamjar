@@ -4,11 +4,16 @@ import { getLogger } from "./logging";
 import { createProxyMiddleware, fixRequestBody } from "http-proxy-middleware";
 import { config } from "./config";
 import bodyParser from "body-parser";
-import { devStrategy, basicAuthStrategy, devJamAdminStrategy } from "./authStrategies";
+import {
+  devStrategy,
+  basicAuthStrategy,
+  devJamAdminStrategy,
+} from "./authStrategies";
 import { AuthenticationResult } from "./middleware/types";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import { authRouter } from "./routers/auth";
+import { publicStrategy } from "./authStrategies/public";
 
 const prisma = new PrismaClient();
 const log = getLogger();
@@ -29,7 +34,25 @@ export const start = () => {
   app.use(bodyParser.json());
   app.use(cookieParser());
 
+  // PUBLIC ROUTES
+
   app.use("/auth", authRouter);
+
+  app.get(
+    "/socket.io",
+    createProxyMiddleware({
+      target: config.DEPENDENCY_API,
+      changeOrigin: false,
+      ws: true,
+      logLevel: "debug",
+      // onProxyReq: (proxyReq, req, res) => {
+      //   proxyReq.setHeader("User-Context", "anonymous");
+      //   // delete req.body.authResult;
+      //   // proxyReq.write(JSON.stringify({ foo: "bar" }));
+      //   // fixRequestBody(proxyReq, req);
+      // },
+    }),
+  );
 
   /**
    * Authenticates based on a given strategy.
@@ -52,11 +75,14 @@ export const start = () => {
     if (!authHeader && asAdminHeader && config.Env === "DEV") {
       result = await devStrategy();
     } else if (req.cookies.asAdminOfJam) {
-      result = await devJamAdminStrategy(req.cookies.asAdminOfJam)
+      result = await devJamAdminStrategy(req.cookies.asAdminOfJam);
     } else if (req.cookies.jivesession) {
       result = await basicAuthStrategy(req.cookies.jivesession);
     } else if (authHeader && authHeader.startsWith("Basic ")) {
       result = await basicAuthStrategy(authHeader.split(" ")[1]);
+    } else if (req.route === "/socket.io") {
+      console.log("doing the tuhtneohusneohuteo");
+      result = publicStrategy(req.route);
     } else {
       result = { success: false, reason: "Not authenticated." };
     }

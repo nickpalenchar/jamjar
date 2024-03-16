@@ -1,6 +1,7 @@
 import "dotenv/config";
 
 import express, { NextFunction, type Request, type Response } from "express";
+import { createServer } from "node:http"; // TODO maybe this is https??
 import { getLogger } from "@jamjar/util";
 import httpErrors from "http-errors";
 import { createContext } from "./middleware/createContext";
@@ -9,16 +10,20 @@ import { jam } from "./routers/jam";
 import { health } from "./routers/health";
 import { spotify } from "./routers/spotify";
 import { PrismaClient } from "@prisma/client";
+import { connectSocket } from "./websocket";
 
 const log = getLogger();
 
 const app = express();
-
+const server = createServer(app);
 app.use(bodyParser.json());
 
+connectSocket(server);
+
 app.use((req: Request, res: Response, next: NextFunction) => {
-  log.debug("NEW REQUEST", {
+  log.info("NEW REQUEST", {
     route: req.route,
+    socket: req.socket.connecting,
   });
   next();
 });
