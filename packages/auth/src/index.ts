@@ -38,11 +38,10 @@ export const start = () => {
 
   app.use("/auth", authRouter);
 
-  app.get(
-    "/socket.io",
-    createProxyMiddleware({
+  app.use(
+    createProxyMiddleware("/socket", {
       target: config.DEPENDENCY_API,
-      changeOrigin: false,
+      changeOrigin: true,
       ws: true,
       logLevel: "debug",
       // onProxyReq: (proxyReq, req, res) => {
