@@ -16,8 +16,7 @@ module.exports = function (app) {
     }),
   );
   app.use(
-    '/socket.io',
-    createProxyMiddleware({
+    createProxyMiddleware('/socket', {
       target: 'http://localhost:1155',
       changeOrigin: true,
       ws: true,
