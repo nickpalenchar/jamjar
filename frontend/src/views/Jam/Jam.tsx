@@ -30,6 +30,7 @@ import { socket } from '../../socket';
 export const Jam: FC<{}> = () => {
   // socket.io
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [fooEvents, setFooEvents] = useState<any[]>([]);
 
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
@@ -89,29 +90,20 @@ export const Jam: FC<{}> = () => {
     }
 
     function onFooEvent(value: any) {
-      console.log('got foo event!', value);
-      console.log('jam data here?L', jamData);
-      if (jamData) {
-        console.log('NEW PLAYING IS', jamData.nowPlaying?.id);
-        setSongQueue([
-          ...value.data.updatedQueue.filter(
-            (queueItem: QueueItem) => queueItem.id !== jamData?.nowPlaying?.id,
-          ),
-        ]);
-      }
-      // setFooEvents((previous: any) => [...previous, value]);
+      console.log('got foo event!');
+      setFooEvents((previous: any) => [...previous, value]);
     }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('put:songQueue', onFooEvent);
-    socket.connect();
+    socket.on('foo', onFooEvent);
+
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('foo', onFooEvent);
     };
-  }, [jamData, setSongQueue]);
+  }, []);
 
   if (isLoading || loading || !jamData) {
     return <Loading />;
