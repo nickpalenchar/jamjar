@@ -90,7 +90,15 @@ export const Jam: FC<{}> = () => {
 
     function onFooEvent(value: any) {
       console.log('got foo event!', value);
-      setSongQueue([...value.data.updatedQueue]);
+      console.log('jam data here?L', jamData);
+      if (jamData) {
+        console.log('NEW PLAYING IS', jamData.nowPlaying?.id);
+        setSongQueue([
+          ...value.data.updatedQueue.filter(
+            (queueItem: QueueItem) => queueItem.id !== jamData?.nowPlaying?.id,
+          ),
+        ]);
+      }
       // setFooEvents((previous: any) => [...previous, value]);
     }
 
@@ -103,7 +111,7 @@ export const Jam: FC<{}> = () => {
       socket.off('disconnect', onDisconnect);
       socket.off('foo', onFooEvent);
     };
-  }, []);
+  }, [jamData, setSongQueue]);
 
   if (isLoading || loading || !jamData) {
     return <Loading />;

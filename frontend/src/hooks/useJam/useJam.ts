@@ -33,7 +33,11 @@ interface UseJamApiResult {
 
 export const useJamApi = ({
   jamId,
-}: UseJamApiProps): [UseJamApiResult, (queueItems: QueueItem[]) => void, CallableFunction] => {
+}: UseJamApiProps): [
+  UseJamApiResult,
+  (queueItems: QueueItem[]) => void,
+  CallableFunction,
+] => {
   const [jamData, setJamData] = useState<JamData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,8 +78,25 @@ export const useJamApi = ({
     fetchData();
   }, [jamId]);
 
-  const setQueueSongs = (queueSongs: QueueItem[]) =>
-    jamData && setJamData({ ...jamData, queue: queueSongs });
+  const setQueueSongs = (queueSongs: QueueItem[]) => {
+    console.log('jam data??', jamData);
+    setJamData((jamData) => {
+      console.log('isnide the jam', jamData);
+      if (jamData) {
+        return { ...jamData, queue: queueSongs };
+      }
+      return {
+        queue: queueSongs,
+        id: 'UNKNOWN',
+        phrase: 'UNKNOWN',
+        nowPlaying: null,
+        userId: 'UNKNOWN',
+      };
+    });
+    jamData &&
+      setJamData((jamData) => jamData && { ...jamData, queue: queueSongs });
+    console.log('CALLED IT?');
+  };
 
   return [{ jamData, isLoading, error }, setQueueSongs, setJamData];
 };
