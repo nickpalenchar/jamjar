@@ -135,9 +135,9 @@ export const Jam: FC<{}> = () => {
     // TODO maybe set some state?
   };
   const onNewSong = (song: QueueItem) => {
-    const updatedQueue = [song, ...jamData.queue].sort((a, b) =>
-      a.rank > b.rank ? 1 : -1,
-    );
+    const updatedQueue = [song, ...jamData.queue]
+      .sort((a, b) => (a.rank > b.rank ? 1 : -1))
+      .filter((queueItem) => queueItem.id !== jamData.nowPlaying?.id);
     setSongQueue(updatedQueue);
     setTabIndex(isOwner ? 1 : 0);
   };
