@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, QueueSongs } from "@prisma/client";
 import { getLoggerWithData } from "../logging";
 import { add, isBefore } from "date-fns";
 import { SpotifyClient } from "@jamjar/util";
@@ -14,7 +14,6 @@ interface PlayNextSongFromQueueParams {
 export const playNextSongFromQueue = async ({
   jamId,
 }: PlayNextSongFromQueueParams) => {
-  console.log(1);
   const now = new Date();
   const jam = await prisma.jam.findUnique({
     where: {
@@ -24,7 +23,6 @@ export const playNextSongFromQueue = async ({
       QueueSongs: true,
     },
   });
-  console.log(2);
 
   if (!jam) {
     throw Error("no jam");
@@ -34,28 +32,35 @@ export const playNextSongFromQueue = async ({
       id: jam.userId,
     },
   });
-  console.log(3);
 
   const spotifyClient = new SpotifyClient(owner);
   console.log({ QueueSongs: jam.QueueSongs });
-  const nextSong = jam.QueueSongs.sort((a, b) => (a.rank < b.rank ? 1 : -1))[0];
+
+  let lastNowPlaying: QueueSongs | undefined;
+  const songsRanked = jam.QueueSongs.filter((song) => {
+    if (song.nowPlaying) {
+      lastNowPlaying = song;
+      return false;
+    }
+    return true;
+  }).sort((a, b) => (a.rank < b.rank ? 1 : -1));
+
+  const nextSong = songsRanked[0];
 
   if (!nextSong) {
     log.info("no song in queue");
     // TODO pause
     return;
   }
-  console.log(4);
 
-  log.info("REQUESTING ", { uris: [jam.QueueSongs[0].spotifyUri] });
+  log.info("REQUESTING ", { uris: [nextSong.spotifyUri] });
   const playReq = await spotifyClient.fetch("/v1/me/player/play", {
     method: "put",
-    body: JSON.stringify({ uris: [jam.QueueSongs[0].spotifyUri] }),
+    body: JSON.stringify({ uris: [nextSong.spotifyUri] }),
     headers: {
       "Content-Type": "application/json",
     },
   });
-  console.log(5);
 
   if (playReq.status === 404) {
     // TODO start playing again.
@@ -66,11 +71,24 @@ export const playNextSongFromQueue = async ({
     log.error("Unhandled error", { status: playReq.status });
   }
 
-  await prisma.queueSongs.delete({
-    where: {
-      id: nextSong.id,
-    },
-  });
+  if (playReq.status < 300) {
+    await prisma.queueSongs.update({
+      where: {
+        id: nextSong.id,
+      },
+      data: {
+        nowPlaying: true,
+      },
+    });
+  }
+
+  if (lastNowPlaying) {
+    await prisma.queueSongs.delete({
+      where: {
+        id: lastNowPlaying.id,
+      },
+    });
+  }
   log.info("fetching id", {
     route: `/v1/tracks/${nextSong.spotifyUri?.split(":").at(-1)}`,
   });

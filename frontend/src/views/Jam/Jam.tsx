@@ -25,8 +25,12 @@ import { JoinJamModal } from './modals/joinJamModal';
 import { JamTab } from './tabs/JamTab';
 import { MiniWorker } from './miniWorker';
 import { AdminTab } from './tabs/AdminTab';
+import { socket } from '../../socket';
 
 export const Jam: FC<{}> = () => {
+  // socket.io
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
   const { user, setUser, error, loading } = useContext(UserContext);
   let { jamId } = useParams();
   const [_, setMiniWorker] = useState<any>(null);
@@ -74,7 +78,40 @@ export const Jam: FC<{}> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jamData?.id]);
 
-  useEffect(() => {});
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      // XXX reconnection strategy;
+      setIsConnected(false);
+    }
+
+    function onFooEvent(value: any) {
+      console.log('got foo event!', value);
+      console.log('jam data here?L', jamData);
+      if (jamData) {
+        console.log('NEW PLAYING IS', jamData.nowPlaying?.id);
+        setSongQueue([
+          ...value.data.updatedQueue.filter(
+            (queueItem: QueueItem) => queueItem.id !== jamData?.nowPlaying?.id,
+          ),
+        ]);
+      }
+      // setFooEvents((previous: any) => [...previous, value]);
+    }
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('put:songQueue', onFooEvent);
+    socket.connect();
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('foo', onFooEvent);
+    };
+  }, [jamData, setSongQueue]);
 
   if (isLoading || loading || !jamData) {
     return <Loading />;
@@ -98,11 +135,11 @@ export const Jam: FC<{}> = () => {
     // TODO maybe set some state?
   };
   const onNewSong = (song: QueueItem) => {
-    const updatedQueue = [song, ...jamData.queue].sort((a, b) =>
-      a.rank > b.rank ? 1 : -1,
-    );
+    const updatedQueue = [song, ...jamData.queue]
+      .sort((a, b) => (a.rank > b.rank ? 1 : -1))
+      .filter((queueItem) => queueItem.id !== jamData.nowPlaying?.id);
     setSongQueue(updatedQueue);
-    setTabIndex(0);
+    setTabIndex(isOwner ? 1 : 0);
   };
 
   const isOwner = user?.id === (jamData?.userId ?? Symbol());

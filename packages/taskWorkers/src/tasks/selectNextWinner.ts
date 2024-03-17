@@ -1,5 +1,6 @@
-/** Find the highest voted song for a jam and adds it to the playlist */
-import { PrismaClient } from "@prisma/client";
+/** Find the highest voted song for a jam and adds it to nowPlaying, 
+ * replacing current nowPlaying if it exists */
+import { PrismaClient, QueueSongs } from "@prisma/client";
 import { getLoggerWithData } from "../logging";
 import { add } from "date-fns";
 import { SpotifyClient } from "@jamjar/util";

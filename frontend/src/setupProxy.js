@@ -15,4 +15,12 @@ module.exports = function (app) {
       changeOrigin: false,
     }),
   );
+  app.use(
+    createProxyMiddleware('/socket', {
+      target: 'http://localhost:1155',
+      changeOrigin: true,
+      ws: true,
+      logLevel: 'debug',
+    }),
+  );
 };

@@ -5,6 +5,7 @@ export interface JamData {
   id: string;
   phrase: string;
   queue: Array<QueueItem>;
+  nowPlaying: QueueItem | null;
   userId: string; // owner
 }
 export interface QueueItem {
@@ -15,6 +16,7 @@ export interface QueueItem {
   rank: number;
   uri: string;
   albumImageUrl: string;
+  nowPlaying: boolean;
 }
 
 export type SetSongQueueParams = QueueItem[];
@@ -31,7 +33,11 @@ interface UseJamApiResult {
 
 export const useJamApi = ({
   jamId,
-}: UseJamApiProps): [UseJamApiResult, (queueItems: QueueItem[]) => void] => {
+}: UseJamApiProps): [
+  UseJamApiResult,
+  (queueItems: QueueItem[]) => void,
+  CallableFunction,
+] => {
   const [jamData, setJamData] = useState<JamData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,12 +52,21 @@ export const useJamApi = ({
             setIsLoading(false);
             setJamData(null);
           }
-          // setIsLoading(false);
-          // setError(response.)
-          // throw new Error(`Error fetching data for ID ${jamId}`);
         }
-
         const data: JamData = await response.json();
+        data.queue = data.queue.filter((queueSong) => {
+          if (queueSong.nowPlaying) {
+            data.nowPlaying = queueSong;
+            return false;
+          }
+          return true;
+        });
+        for (const queueSong of data.queue) {
+          if (queueSong.nowPlaying) {
+            data.nowPlaying = queueSong;
+            break;
+          }
+        }
         setJamData(data);
       } catch (error) {
         setError(error as string);
@@ -63,8 +78,25 @@ export const useJamApi = ({
     fetchData();
   }, [jamId]);
 
-  const setQueueSongs = (queueSongs: QueueItem[]) =>
-    jamData && setJamData({ ...jamData, queue: queueSongs });
+  const setQueueSongs = (queueSongs: QueueItem[]) => {
+    console.log('jam data??', jamData);
+    setJamData((jamData) => {
+      console.log('isnide the jam', jamData);
+      if (jamData) {
+        return { ...jamData, queue: queueSongs };
+      }
+      return {
+        queue: queueSongs,
+        id: 'UNKNOWN',
+        phrase: 'UNKNOWN',
+        nowPlaying: null,
+        userId: 'UNKNOWN',
+      };
+    });
+    jamData &&
+      setJamData((jamData) => jamData && { ...jamData, queue: queueSongs });
+    console.log('CALLED IT?');
+  };
 
-  return [{ jamData, isLoading, error }, setQueueSongs];
+  return [{ jamData, isLoading, error }, setQueueSongs, setJamData];
 };
