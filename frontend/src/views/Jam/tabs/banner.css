@@ -2,9 +2,6 @@
   position: relative;
   overflow: hidden;
 
-  /* Additional styles for your card */
-
-  /* Styling for the banner */
   &::before {
     content: 'Now playing';
     text-align: center;
@@ -12,12 +9,12 @@
     top: 25px;
     right: -55px;
     width: 200px;
-    background-color: #222; /* Choose your banner background color */
-    color: #fff; /* Choose your banner text color */
-    padding: 0; /* Adjust padding as needed */
-    border-bottom-left-radius: 5px; /* Optional: Add some border-radius for styling */
-    transform: rotate(40deg); /* Rotate the banner text by 45 degrees */
-    transform-origin: center center; /* Set the rotation origin to the bottom right corner */
+    background-color: #222; 
+    color: #fff;
+    padding: 0;
+    border-bottom-left-radius: 5px;
+    transform: rotate(40deg);
+    transform-origin: center center;
 
     z-index: 0;
   }

@@ -89,10 +89,7 @@ export const Jam: FC<{}> = () => {
     }
 
     function onFooEvent(value: any) {
-      console.log('got foo event!', value);
-      console.log('jam data here?L', jamData);
       if (jamData) {
-        console.log('NEW PLAYING IS', jamData.nowPlaying?.id);
         setSongQueue([
           ...value.data.updatedQueue.filter(
             (queueItem: QueueItem) => queueItem.id !== jamData?.nowPlaying?.id,
