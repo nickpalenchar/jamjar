@@ -143,14 +143,20 @@ export const Jam: FC<{}> = () => {
   const isUserInJam = user.userInJam?.jamId === jamId || isOwner;
 
   const vibes = user.userInJam?.vibes ?? 0;
-  const vibeColor = vibes > 1 ? 'black' : vibes === 1 ? 'red.700' : 'red.600';
+  const vibeColor = vibes > 1 ? 'white' : vibes === 1 ? 'red.100' : 'red.200';
   return (
     <>
-      <Flex bg="orange.100" w="100%" h="3em" marginBottom={'2em'} padding="8px">
+      <Flex
+        bgGradient="linear(to-r, #023788, #D40078)"
+        w="100%"
+        h="3em"
+        marginBottom={'2em'}
+        padding="8px"
+      >
         <Center>
           <Image
             h="1.5em"
-            src={process.env.PUBLIC_URL + '/jivelogo2-xs.webp'}
+            src={process.env.PUBLIC_URL + '/jivelogo2-xs-light.webp'}
           />
         </Center>
         <Spacer />
