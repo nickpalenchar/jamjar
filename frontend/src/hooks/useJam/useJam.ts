@@ -79,9 +79,7 @@ export const useJamApi = ({
   }, [jamId]);
 
   const setQueueSongs = (queueSongs: QueueItem[]) => {
-    console.log('jam data??', jamData);
     setJamData((jamData) => {
-      console.log('isnide the jam', jamData);
       if (jamData) {
         return { ...jamData, queue: queueSongs };
       }
@@ -95,7 +93,6 @@ export const useJamApi = ({
     });
     jamData &&
       setJamData((jamData) => jamData && { ...jamData, queue: queueSongs });
-    console.log('CALLED IT?');
   };
 
   return [{ jamData, isLoading, error }, setQueueSongs, setJamData];

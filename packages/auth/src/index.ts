@@ -44,12 +44,6 @@ export const start = () => {
       changeOrigin: true,
       ws: true,
       logLevel: "debug",
-      // onProxyReq: (proxyReq, req, res) => {
-      //   proxyReq.setHeader("User-Context", "anonymous");
-      //   // delete req.body.authResult;
-      //   // proxyReq.write(JSON.stringify({ foo: "bar" }));
-      //   // fixRequestBody(proxyReq, req);
-      // },
     }),
   );
 
