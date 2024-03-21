@@ -8,6 +8,7 @@ import {
   Spacer,
   Button,
   Box,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { Container } from 'react-bootstrap';
